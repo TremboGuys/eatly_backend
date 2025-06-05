@@ -32,6 +32,6 @@ router.register(r'addresses', AddressViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('auth/users/', include(usuario_router.urls)),
-    path('auth/users/register/person/', UserRegisterAPIView.as_view())
+    path('api/users/', include(usuario_router.urls)),
+    path('api/users/register/person/', UserRegisterAPIView.as_view())
 ]
