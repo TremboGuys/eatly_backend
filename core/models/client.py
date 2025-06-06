@@ -8,7 +8,7 @@ class Client(models.Model):
         FEMININE = 2, "Feminine",
         HIDDEN = 3, "Hidden"
     user = models.OneToOneField(Usuario, on_delete=models.PROTECT, related_name="client")
-    genre = models.IntegerField(choices=Genre, null=True)
+    genre = models.IntegerField(choices=Genre, null=True, blank=True)
     date_birth = models.DateField()
     cpf = models.CharField(max_length=11, null=True, verbose_name="CPF")
 
