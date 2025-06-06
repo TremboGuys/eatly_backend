@@ -1,8 +1,8 @@
 def make_user_active(validated_data, instance):
-    user = instance.objects.create(**validated_data)
+    instanceUser = instance.objects.create(**validated_data)
 
-    user.user.role_register = 1
+    instanceUser.user.role_register = True
 
-    user.save()
+    instanceUser.user.save()
 
-    return user
+    return instanceUser
