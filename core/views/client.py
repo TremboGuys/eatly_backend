@@ -5,17 +5,17 @@ from rest_framework import status
 from core.models import Client
 from core.serializers import ClientSerializer
 
-from .view_helpers import verify_role_register
+from .view_helpers import verify_is_active
 
 class ClientViewSet(ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
     def create(self, request):
-        verify = verify_role_register(request.data)
+        verify = verify_is_active(request.data)
 
-        if verify == False:
-            return Response({"message": "Role_register is already validated"}, status=status.HTTP_400_BAD_REQUEST)
+        if verify == True:
+            return Response({"message": "User is already active"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = ClientSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
