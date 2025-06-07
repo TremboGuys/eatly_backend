@@ -29,6 +29,7 @@ router.register(r'categories', CategoryViewSet)
 router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'users/register/clients', ClientViewSet)
+router.register(r'users/register/restaurants', RestaurantViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

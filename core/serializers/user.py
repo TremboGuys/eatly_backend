@@ -15,7 +15,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Usuario
-        fields = ['email', 'password', 'role']
+        fields = ['email', 'password', 'role', 'is_active']
     
     def create(self, validated_data):
         role = validated_data.pop('role')
