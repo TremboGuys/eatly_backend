@@ -5,17 +5,22 @@ from django.contrib.auth.models import Group
 from usuario.models import Usuario
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    ROLE_CHOICES = []
-
-    for x in Group.objects.all():
-        ROLE_CHOICES.append(x.name)
-
-    role = serializers.ChoiceField(choices=ROLE_CHOICES, write_only=True)
+    role = serializers.ChoiceField(choices=[], write_only=True)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = Usuario
         fields = ['email', 'password', 'role', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        try:
+            group_choices = [(group.name, group.name) for group in Group.objects.all()]
+        except Exception:
+            group_choices = []
+        
+        self.fields['role'].choices = group_choices
     
     def create(self, validated_data):
         role = validated_data.pop('role')
