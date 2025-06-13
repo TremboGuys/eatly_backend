@@ -13,7 +13,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
-    'eatly-backend-4s5f.onrender.com',  # Adicione o domínio do Render aqui
+    'eatly-backend-cbai.onrender.com'
 ]
 
 
