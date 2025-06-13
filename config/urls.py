@@ -28,10 +28,12 @@ router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet)
+router.register(r'users/register/clients', ClientViewSet)
+router.register(r'users/register/restaurants', RestaurantViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('auth/users/', include(usuario_router.urls)),
-    path('auth/users/register/person/', UserRegisterAPIView.as_view())
+    path('api/users/', include(usuario_router.urls)),
+    path('api/users/register/person/', UserRegisterAPIView.as_view())
 ]
