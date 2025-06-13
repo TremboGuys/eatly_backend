@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-43$r$a)j90%znp+^s83m*li75@mv3dke3pgtvinubxr55#)b6n
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '0.0.0.0'
+    '0.0.0.0',
+    '127.0.0.1'
 ]
 
 
@@ -41,10 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'usuario',
     'uploader',
-    'core'
+    'core',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,3 +136,10 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL="usuario.Usuario"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
