@@ -2,5 +2,5 @@ from .user import UserRegisterAPIView
 from .category import CategoryViewSet
 from .telephone import TelephoneViewSet
 from .address import AddressViewSet
-from .client import ClientViewSet
+from .natural_person import NaturalPersonViewSet
 from .restaurant import RestaurantViewSet
