@@ -14,17 +14,17 @@ license = {text = "MIT"}
 [tool.pdm]
 distribution = false
 
-[tool.pdm.scripts]
+    [tool.pdm.scripts]
 
-dev = "python manage.py runserver"
-migrate = "python manage.py migrate"
-makemigrations = "python manage.py makemigrations"
-createsuperuser = "python manage.py createsuperuser"
-shell = "python manage.py shell"
-clean = "find . -name '*.pyc' -delete && find . -name '__pycache__' -exec rm -r {} +"
-test = "python manage.py test"
-lint = "ruff ."
-format = "black ."
-update = "pdm update"
-install = "pdm install"
-graph = "python manage.py graph_models -a -o graphviz.png"
+    dev = "python manage.py runserver"
+    migrate = "python manage.py migrate"
+    makemigrations = "python manage.py makemigrations"
+    createsuperuser = "python manage.py createsuperuser"
+    shell = "python manage.py shell"
+    clean = "find . -name '*.pyc' -delete && find . -name '__pycache__' -exec rm -r {} +"
+    test = "python manage.py test"
+    lint = "ruff ."
+    format = "black ."
+    update = "pdm update"
+    install = "pdm install"
+    graph = "python manage.py graph_models -a -o graphviz.png"
