@@ -30,6 +30,9 @@ router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet)
 router.register(r'users/register/naturalPerson', NaturalPersonViewSet)
 router.register(r'users/register/restaurants', RestaurantViewSet)
+router.register(r'users/register/vehicle', VehicleViewSet)
+router.register(r'marks', MarkViewSet)
+router.register(r'colors', ColorViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
