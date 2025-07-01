@@ -1,14 +1,21 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from core.models import Vehicle
-from core.serializers.serializer_helpers import make_user_active
 
-class VehicleSerializer(ModelSerializer):
+from infra.cloudinary import UploadCloudinary
+
+class VehicleSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(write_only=True)
+
     class Meta:
         model = Vehicle
         fields = "__all__"
     
     def create(self, validated_data):
-        vehicle = make_user_active(validated_data=validated_data, instance=Vehicle)
+        pdf = validated_data.pop('file')
+        uploader = UploadCloudinary()
+        url_pdf = uploader.create_pdf(pdf)
 
-        return vehicle
+        validated_data['url_crlv'] = url_pdf['secure_url']
+
+        return Vehicle.objects.create(**validated_data)
