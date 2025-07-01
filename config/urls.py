@@ -28,8 +28,11 @@ router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet)
-router.register(r'users/register/naturalPerson', NaturalPersonViewSet)
+router.register(r'users/register/naturalPersons', NaturalPersonViewSet)
 router.register(r'users/register/restaurants', RestaurantViewSet)
+router.register(r'vehicles', VehicleViewSet)
+router.register(r'marks', MarkViewSet)
+router.register(r'colors', ColorViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
