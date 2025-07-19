@@ -33,6 +33,8 @@ router.register(r'users/register/restaurants', RestaurantViewSet)
 router.register(r'vehicles', VehicleViewSet)
 router.register(r'marks', MarkViewSet)
 router.register(r'colors', ColorViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'favorites', FavoriteViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
