@@ -14,7 +14,7 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
     'eatly-backend-cbai.onrender.com',
-    'https://eatly-frontend-trza.onrender.com/'
+    'https://eatly-frontend-trza.onrender.com'
 ]
 
 
@@ -119,5 +119,5 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://eatly-frontend-trza.onrender.com/",
+    "https://eatly-frontend-trza.onrender.com",
 ]
