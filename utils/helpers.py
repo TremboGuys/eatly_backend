@@ -9,12 +9,16 @@ def verify_is_active(data):
     
     return False
 
-def verify_group_user(id_user, group):
-    user = Usuario.objects.get(id=id_user)
+def verify_group_user(instance, id_user, group):
+    user = instance.objects.get(id=id_user)
 
     if user == None:
         return False
     
-    if user.groups.get(name=group):
-        return True
+    if hasattr(user, 'user') == True:
+        if user.user.groups.get(name=group):
+            return True
+    else:
+        if user.groups.get(name=group):
+            return True
     return False

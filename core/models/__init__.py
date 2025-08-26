@@ -8,3 +8,4 @@ from .mark import Mark
 from .color import Color
 from .product import Product
 from .favorite import Favorite
+from .order import Order
