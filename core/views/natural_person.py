@@ -8,6 +8,7 @@ from core.serializers import NaturalPersonSerializer
 class NaturalPersonViewSet(ModelViewSet):
     queryset = NaturalPerson.objects.all()
     serializer_class = NaturalPersonSerializer
+    http_method_names = ['get', 'post', 'patch']
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
