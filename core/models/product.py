@@ -13,6 +13,7 @@ class Product(models.Model):
     value = models.DecimalField(max_digits=7, decimal_places=2)
     is_adult = models.BooleanField()
     status = models.IntegerField(choices=Status.choices, default=Status.ACTIVE)
+    url_file = models.URLField(null=True, blank=True)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, related_name="products")
     categories = models.ManyToManyField(Category, related_name="+")
 
