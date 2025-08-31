@@ -9,13 +9,15 @@ class OrderSerializer(ModelSerializer):
         fields = "__all__"
     
     def validate(self, attrs):
-        if ("client" in attrs and "deliveryMan" in attrs) and attrs["client"] == attrs["deliveryMan"]:
+        deliveryMan = attrs.get('deliveryMan', None)
+        client = attrs.get('client', None)
+        if (client is not None and deliveryMan is not None) and client == deliveryMan:
             raise ValidationError({"error": "Client and deliveryman can't have the same id"})
     
-        if verify_group_user(NaturalPerson, attrs['client'], 'client') == False:
+        if verify_group_user(client, None, 'client') == False:
             raise ValidationError({"error": "Id client does not have the corresponding group"})
         
-        if attrs.data['deliveryMan'] != None and verify_group_user(NaturalPerson, attrs['deliveryMan'], 'deliveryman') == False:
+        if deliveryMan is not None and verify_group_user(deliveryMan, None, 'deliveryman') == False:
             raise ValidationError({"error": "Id deliveryman does not have the corresponding group"})
         
         return attrs
