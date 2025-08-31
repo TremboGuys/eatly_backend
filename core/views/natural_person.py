@@ -5,20 +5,12 @@ from rest_framework import status
 from core.models import NaturalPerson
 from core.serializers import NaturalPersonSerializer
 
-from .view_helpers import verify_is_active
-
 class NaturalPersonViewSet(ModelViewSet):
     queryset = NaturalPerson.objects.all()
     serializer_class = NaturalPersonSerializer
+    http_method_names = ['get', 'post', 'patch']
 
-    def create(self, request):
-        verify = verify_is_active(request.data)
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
 
-        if verify == True:
-            return Response({"message": "User is already active"}, status=status.HTTP_400_BAD_REQUEST)
-
-        serializer = NaturalPersonSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"message": "Natural Person created with success", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Natural Person created with success", "data": response.data}, status=status.HTTP_201_CREATED)

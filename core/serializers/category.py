@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 from core.models import Category
-
 from infra import UploadCloudinary
+from utils.helpers import create_image
 
 class CategorySerializer(serializers.ModelSerializer):
     file = serializers.ImageField(write_only=True)
@@ -12,11 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     def create(self, validated_data):
-        file = validated_data.pop('file')
-        uploader = UploadCloudinary()
-        response = uploader.create_image(file)
-
-        validated_data['url_image'] = response['secure_url']
+        validated_data['url_file'] = create_image(validated_data.pop('file'))
 
         return Category.objects.create(**validated_data)
     

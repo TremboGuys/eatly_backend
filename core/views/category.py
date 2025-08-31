@@ -20,9 +20,9 @@ class CategoryViewSet(ModelViewSet):
 
         return Response({"message": "Category created with sucess", "data": serializer.data}, status=status.HTTP_201_CREATED)
     
-    def partial_update(self, request, *args, **kwargs):
+    def partial_update(self, request, pk=None):
         try:
-            instance = self.get_object()
+            category = Category.objects.get(id=pk)
         except Category.DoesNotExist:
             return Response({"message: Category does not exist"}, status=status.HTTP_404_NOT_FOUND)
         

@@ -7,3 +7,6 @@ from .restaurant import RestaurantSerializer
 from .vehicle import VehicleSerializer
 from .mark import MarkSerializer
 from .color import ColorSerializer
+from .product import ProductSerializer
+from .favorite import FavoriteSerializer
+from .order import OrderSerializer

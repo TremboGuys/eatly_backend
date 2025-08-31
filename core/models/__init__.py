@@ -6,3 +6,6 @@ from .restaurant import Restaurant
 from .vehicle import Vehicle
 from .mark import Mark
 from .color import Color
+from .product import Product
+from .favorite import Favorite
+from .order import Order

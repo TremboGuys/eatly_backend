@@ -7,3 +7,6 @@ from .restaurant import RestaurantViewSet
 from .vehicle import VehicleViewSet
 from .mark import MarkViewSet
 from .color import ColorViewSet
+from .product import ProductViewSet
+from .favorite import FavoriteViewSet
+from .order import OrderViewSet
