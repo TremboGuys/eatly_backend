@@ -10,3 +10,4 @@ from .color import ColorSerializer
 from .product import ProductSerializer
 from .favorite import FavoriteSerializer
 from .order import OrderSerializer
+from .coupon import CouponSerializer, CouponClientSerializer, CouponClientOrderSerializer
