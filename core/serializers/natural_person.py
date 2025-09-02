@@ -15,9 +15,9 @@ class NaturalPersonSerializer(ModelSerializer):
 
         return person
     
-    def validate(self, attrs):
-        if self.context['request'].method == "POST":
-            if verify_is_active(attrs) == True:
-                raise ValidationError({"error": "User is already active"})
+    # def validate(self, attrs):
+    #     if self.context['request'].method == "POST":
+    #         if verify_is_active(attrs) == True:
+    #             raise ValidationError({"error": "User is already active"})
         
-        return attrs
+    #     return attrs

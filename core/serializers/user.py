@@ -4,6 +4,9 @@ from django.contrib.auth.models import Group
 
 from usuario.models import Usuario
 
+from core.models import NaturalPerson, Telephone
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(choices=[], write_only=True)
     password = serializers.CharField(write_only=True)
