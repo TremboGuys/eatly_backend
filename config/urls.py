@@ -40,6 +40,7 @@ router.register(r'colors', ColorViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'favorites', FavoriteViewSet)
 router.register(r'orders', OrderViewSet)
+router.register(r'coupons', CouponViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

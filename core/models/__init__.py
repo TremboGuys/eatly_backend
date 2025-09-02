@@ -9,3 +9,4 @@ from .color import Color
 from .product import Product
 from .favorite import Favorite
 from .order import Order
+from .coupon import Coupon, CouponClient, CouponClientOrder
