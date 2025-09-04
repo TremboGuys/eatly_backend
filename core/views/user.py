@@ -17,6 +17,7 @@ class UserRegisterAPIView(APIView):
             user = serializerUser.save()
 
             npModel['user'] = user.id
+            cellphoneModel['user'] = user.id
 
             serializerNP = NaturalPersonSerializer(data=npModel)
             serializerNP.is_valid(raise_exception=True)
