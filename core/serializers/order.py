@@ -1,6 +1,7 @@
+import datetime
 from rest_framework.serializers import ModelSerializer, ValidationError, HiddenField, CurrentUserDefault
 
-from core.models import Order, ProductOrder
+from core.models import Order, ProductOrder, OrderStatusLog
 
 class ProductOrderSerializer(ModelSerializer):
     class Meta:
@@ -32,6 +33,8 @@ class CreateOrderSerializer(ModelSerializer):
         for product in products:
             ProductOrder.objects.create(order=order, **product)
         
+        OrderStatusLog.objects.create(order=order, status=order.status, dateTime=datetime.datetime.now())
+        
         return order
 
 class DeliveryManAcceptOrderSerializer(ModelSerializer):
@@ -52,6 +55,8 @@ class DeliveryManAcceptOrderSerializer(ModelSerializer):
             instance.status=validated_data['status']
         
         instance.save()
+
+        OrderStatusLog.objects.create(order=instance, status=instance.status, dateTime=datetime.datetime.now())
         return instance
 
     # def validate(self, attrs):

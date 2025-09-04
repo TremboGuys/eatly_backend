@@ -11,4 +11,3 @@ from .product import ProductSerializer
 from .favorite import FavoriteSerializer
 from .order import OrderListSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
 from .coupon import CouponSerializer, CouponClientSerializer, CouponClientOrderSerializer
-from .orderStatusLog import OrderStatusLogSerializer
