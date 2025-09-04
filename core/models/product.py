@@ -1,7 +1,7 @@
 from django.db import models
 
-from .restaurant import Restaurant
 from .category import Category
+from usuario.models import Usuario
 
 class Product(models.Model):
     class Status(models.IntegerChoices):
@@ -14,7 +14,7 @@ class Product(models.Model):
     is_adult = models.BooleanField()
     status = models.IntegerField(choices=Status.choices, default=Status.ACTIVE)
     url_file = models.URLField(null=True, blank=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, related_name="products")
+    restaurant = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="products")
     categories = models.ManyToManyField(Category, related_name="+")
 
     def __str__(self):

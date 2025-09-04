@@ -6,6 +6,7 @@ from infra.cloudinary import UploadCloudinary
 
 class VehicleSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True)
+    deliveryman = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Vehicle
@@ -18,4 +19,7 @@ class VehicleSerializer(serializers.ModelSerializer):
 
         validated_data['url_crlv'] = url_pdf['secure_url']
 
-        return Vehicle.objects.create(**validated_data)
+        instance = Vehicle.objects.create(**validated_data)
+        instance.deliveryman = self.context['required'].user
+        instance.save()
+        return instance
