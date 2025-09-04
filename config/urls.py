@@ -42,6 +42,7 @@ router.register(r'favorites', FavoriteViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'coupons', CouponViewSet)
 router.register(r'coupons-client', CouponClientViewSet)
+router.register(r'orderStatusLogs', OrderStatusLogViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
