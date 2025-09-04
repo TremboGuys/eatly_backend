@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, ValidationError, ImageField
+from rest_framework.serializers import ModelSerializer, ValidationError, ImageField, HiddenField, CurrentUserDefault
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -7,6 +7,7 @@ from utils.helpers import create_image
 
 class ProductSerializer(ModelSerializer):
     file = ImageField(write_only=True)
+    restaurant = HiddenField(default=CurrentUserDefault())
     class Meta:
         model = Product
         fields = "__all__"
@@ -16,6 +17,8 @@ class ProductSerializer(ModelSerializer):
         validated_data['url_file'] = create_image(validated_data.pop('file'))
 
         product = Product.objects.create(**validated_data)
+        
+        product.restaurant = self.context['request'].user
 
         if categories:
             product.categories.set(categories)

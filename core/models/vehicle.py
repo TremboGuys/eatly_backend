@@ -1,11 +1,11 @@
 from django.db import models
 
-from core.models import NaturalPerson
+from usuario.models import Usuario
 
 class Vehicle(models.Model):
-    idNaturalPerson = models.ForeignKey(NaturalPerson, on_delete=models.PROTECT, related_name="vehicles")
-    idMark = models.ForeignKey('Mark', on_delete=models.PROTECT, related_name="vehicles")
-    idColor = models.ForeignKey('Color', on_delete=models.PROTECT, related_name="vehicles")
+    deliveryman = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="vehicles")
+    mark = models.ForeignKey('Mark', on_delete=models.PROTECT, related_name="vehicles")
+    color = models.ForeignKey('Color', on_delete=models.PROTECT, related_name="vehicles")
     VEHICLE_TYPES = [
     ('car', 'Car'),
     ('motorcycle', 'Motorcycle'),
