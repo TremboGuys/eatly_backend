@@ -6,16 +6,18 @@ certifi==2025.4.26
 click==8.2.1
 cloudinary==1.44.0
 colorama==0.4.6; platform_system == "Windows"
-django==5.2.3
+django==5.2.6
 django-cors-headers==4.7.0
 djangorestframework==3.16.0
+djangorestframework-simplejwt==5.5.1
 graphviz==0.20.3
 gunicorn==23.0.0
 h11==0.16.0
 packaging==25.0
 pillow==11.2.1
+pyjwt==2.10.1
 python-dotenv==1.1.0
-python-magic==0.4.27; sys_platform == "linux"
+python-magic==0.4.27
 python-magic-bin==0.4.14; sys_platform == "win32, darwin"
 setuptools==80.9.0
 six==1.17.0
@@ -23,3 +25,4 @@ sqlparse==0.5.3
 tzdata==2025.2; sys_platform == "win32"
 urllib3==2.4.0
 uvicorn==0.34.3
+whitenoise==6.9.0
