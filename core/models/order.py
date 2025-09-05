@@ -24,3 +24,4 @@ class ProductOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="products", null=True, blank=True)
     quantity = models.PositiveSmallIntegerField()
     observation = models.TextField(max_length=200, blank=True, null=True)
+
