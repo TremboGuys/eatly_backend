@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "Joaovictor23t4", email = "joaovictor239090@gmail.com"},
 ]
-dependencies = ["django>=5.2.1", "setuptools>=80.9.0", "djangorestframework>=3.16.0", "graphviz>=0.20.3", "Pillow>=11.2.1", "python-magic>=0.4.27; sys_platform == \"linux\"", "python-magic-bin>=0.4.14; sys_platform == \"win32, darwin\"", "cloudinary>=1.44.0", "python-dotenv>=1.1.0", "gunicorn>=23.0.0", "uvicorn>=0.34.3", "django-cors-headers>=4.7.0", "whitenoise>=6.9.0"]
+dependencies = ["django>=5.2.6", "setuptools>=80.9.0", "djangorestframework>=3.16.0", "graphviz>=0.20.3", "Pillow>=11.2.1", "python-magic>=0.4.27", "python-magic-bin>=0.4.14; sys_platform == \"win32, darwin\"", "cloudinary>=1.44.0", "python-dotenv>=1.1.0", "gunicorn>=23.0.0", "uvicorn>=0.34.3", "django-cors-headers>=4.7.0", "djangorestframework-simplejwt>=5.5.1"]
 requires-python = "==3.12.*"
 readme = "README.md"
 license = {text = "MIT"}
@@ -14,17 +14,17 @@ license = {text = "MIT"}
 [tool.pdm]
 distribution = false
 
-[tool.pdm.scripts]
+    [tool.pdm.scripts]
 
-dev = "python manage.py runserver"
-migrate = "python manage.py migrate"
-makemigrations = "python manage.py makemigrations"
-createsuperuser = "python manage.py createsuperuser"
-shell = "python manage.py shell"
-clean = "find . -name '*.pyc' -delete && find . -name '__pycache__' -exec rm -r {} +"
-test = "python manage.py test"
-lint = "ruff ."
-format = "black ."
-update = "pdm update"
-install = "pdm install"
-graph = "python manage.py graph_models -a -o graphviz.png"
+    dev = "python manage.py runserver"
+    migrate = "python manage.py migrate"
+    makemigrations = "python manage.py makemigrations"
+    createsuperuser = "python manage.py createsuperuser"
+    shell = "python manage.py shell"
+    clean = "find . -name '*.pyc' -delete && find . -name '__pycache__' -exec rm -r {} +"
+    test = "python manage.py test"
+    lint = "ruff ."
+    format = "black ."
+    update = "pdm update"
+    install = "pdm install"
+    graph = "python manage.py graph_models -a -o graphviz.png"

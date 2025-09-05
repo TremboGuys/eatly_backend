@@ -1,23 +1,27 @@
 from django.db import models
 
-from .natural_person import NaturalPerson
-from .restaurant import Restaurant
+from core.models import Restaurant, Product
+from usuario.models import Usuario
 
 class Order(models.Model):
     class Status(models.IntegerChoices):
-       PENDING = 1, "Pending"
-       PREPARING = 2, "Preparing"
-       ROUTE = 3, "Route"
-       DELIVERED = 4, "Delivered" 
-    deliverymen = models.ForeignKey(NaturalPerson, on_delete=models.PROTECT, related_name="orders_delivery", null=True, blank=True)
-    client = models.ForeignKey(NaturalPerson, on_delete=models.PROTECT, related_name="orders_client")
+        PENDING = 1, "Pending"
+        PREPARING = 2, "Preparing"
+        DELIVERING = 3, "Delivering"
+        DELIVERED = 4, "Delivered"
+    client = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="ordersClient")
+    deliveryman = models.ForeignKey(Usuario, null=True, on_delete=models.PROTECT, related_name="ordersDelivery")
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, related_name="orders")
-    total_value = models.DecimalField(max_digits=7, decimal_places=2)
-    date_time = models.DateTimeField()
+    totalValue = models.DecimalField(max_digits=8, decimal_places=2)
+    dateTime = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
     def __str__(self):
-        return f"{self.restaurant.user.first_name} - {self.deliverymen.user.email} - {self.client.user.email}"
+        return f"{self.id}"
 
-    class Meta:
-        unique_together = [('deliverymen', 'client')]
+class ProductOrder(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="+")
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="products", null=True, blank=True)
+    quantity = models.PositiveSmallIntegerField()
+    observation = models.TextField(max_length=200, blank=True, null=True)
+

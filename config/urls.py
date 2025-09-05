@@ -18,6 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from core.views import *
 
@@ -28,12 +32,22 @@ router = DefaultRouter()
 router.register(r'categories', CategoryViewSet)
 router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet)
-router.register(r'users/register/clients', ClientViewSet)
+router.register(r'users/register/naturalPersons', NaturalPersonViewSet)
 router.register(r'users/register/restaurants', RestaurantViewSet)
+router.register(r'vehicles', VehicleViewSet)
+router.register(r'marks', MarkViewSet)
+router.register(r'colors', ColorViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'favorites', FavoriteViewSet)
+router.register(r'orders', OrderViewSet)
+router.register(r'coupons', CouponViewSet)
+router.register(r'coupons-client', CouponClientViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/users/', include(usuario_router.urls)),
-    path('api/users/register/person/', UserRegisterAPIView.as_view())
+    path('api/users/register/person/', UserRegisterAPIView.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]

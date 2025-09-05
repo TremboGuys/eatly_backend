@@ -2,5 +2,12 @@ from .user import UserRegisterAPIView
 from .category import CategoryViewSet
 from .telephone import TelephoneViewSet
 from .address import AddressViewSet
-from .client import ClientViewSet
+from .natural_person import NaturalPersonViewSet
 from .restaurant import RestaurantViewSet
+from .vehicle import VehicleViewSet
+from .mark import MarkViewSet
+from .color import ColorViewSet
+from .product import ProductViewSet
+from .favorite import FavoriteViewSet
+from .order import OrderViewSet
+from .coupon import CouponViewSet, CouponClientViewSet, CouponClientOrderViewSet
