@@ -33,3 +33,27 @@ def create_image(file):
     response = uploader.create_image(file=file)
 
     return response['secure_url']
+
+def relate_user_group(user_data, id):
+    if user_data.role == "client":
+        from core.serializers import NaturalPersonSerializer
+
+        npModel = {"name": user_data.pop('name'), "date_birth": user_data.pop('date_birth')}
+
+        serializer = NaturalPersonSerializer(data=npModel)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    
+    if user_data.role == "restaurant":
+        from core.serializers import RestaurantSerializer
+
+        restaurantModel = {"name": user_data.pop('name'), "cnpj": user_data.pop('cnpj'), "average_delivery_time": user_data.pop('average_delivery_time'), "description": user_data.pop('description'), "categories": user_data.pop('categories')}
+
+        serializer = RestaurantSerializer(data=restaurantModel)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+    
+    if user_data == "deliveryman":
+        from core.serializers import NaturalPersonSerializer
+
+        
