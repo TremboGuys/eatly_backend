@@ -1,4 +1,8 @@
+from dotenv import load_dotenv
+import os
 from datetime import timedelta
+import dj_database_url
+from corsheaders.defaults import default_headers
 """
 Django settings for config project.
 
@@ -12,7 +16,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,12 +86,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL"),
+        conn_max_age=600,
+        ssl_require=True,
+    )
 }
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -132,10 +137,13 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "usuario.Usuario"
 
-# CORS (corrigido)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://eatly-frontend-trza.onrender.com",
 ]
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "skipauth"
+)
