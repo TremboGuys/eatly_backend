@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 from datetime import timedelta
 import dj_database_url
+from corsheaders.defaults import default_headers
 """
 Django settings for config project.
 
@@ -136,10 +137,13 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "usuario.Usuario"
 
-# CORS (corrigido)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://eatly-frontend-trza.onrender.com",
 ]
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "skipauth"
+)
