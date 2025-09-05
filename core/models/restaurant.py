@@ -5,6 +5,7 @@ from .category import Category
 
 class Restaurant(models.Model):
     user = models.OneToOneField(Usuario, on_delete=models.PROTECT, related_name="restaurant")
+    name = models.CharField(max_length=100)
     cnpj = models.CharField(max_length=14, null=True, blank=True, verbose_name="CNPJ")
     average_delivery_time = models.SmallIntegerField()
     description = models.CharField(max_length=255)
