@@ -12,7 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     def create(self, validated_data):
-        validated_data['url_file'] = create_image(validated_data.pop('file'))
+        validated_data['url_image'] = create_image(validated_data.pop('file'))
 
         return Category.objects.create(**validated_data)
     
@@ -22,7 +22,7 @@ class CategorySerializer(serializers.ModelSerializer):
             uploader = UploadCloudinary()
             response = uploader.create_image(file)
 
-            instance.url_image = response['secure_url']
+            instance.url_image = response
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
