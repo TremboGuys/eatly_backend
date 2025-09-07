@@ -14,6 +14,7 @@ class OrderListSerializer(ModelSerializer):
         fields = ["id", "restaurant", "status"]
 
 class OrderRetrieveSerializer(ModelSerializer):
+    products = ProductOrderSerializer(many=True)
     class Meta:
         model = Order
         fields = "__all__"

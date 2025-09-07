@@ -10,22 +10,9 @@ def verify_is_active(data):
     
     return False
 
-def verify_group_user(instance, id_user, group):
-    if id_user is not None:
-        user = instance.objects.get(id=id_user)
-
-        if user == None:
-            return False
-        
-        if hasattr(user, 'user') == True:
-            if user.user.groups.get(name=group):
-                return True
-        else:
-            if user.groups.get(name=group):
-                return True
-    else:
-        if instance.user.groups.get(name=group):
-            return True
+def verify_group_user(user, group):
+    if user.groups.filter(name=group).exists():
+        return True
     return False
 
 def create_image(file):
@@ -38,10 +25,10 @@ def relate_user_group(user_data, id):
     if user_data['user']['role'] == "client":
         from core.serializers import NaturalPersonSerializer
 
-        if "client" not in user_data:
+        if "natural_person" not in user_data:
             raise ValidationError({"error": "Client need their respective data!"})
 
-        npModel = {"user": id, **user_data['client']}
+        npModel = {"user": id, **user_data['natural_person']}
 
         serializer = NaturalPersonSerializer(data=npModel)
         serializer.is_valid(raise_exception=True)

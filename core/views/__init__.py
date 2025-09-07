@@ -11,3 +11,4 @@ from .product import ProductViewSet
 from .favorite import FavoriteViewSet
 from .order import OrderViewSet
 from .coupon import CouponViewSet, CouponClientViewSet, CouponClientOrderViewSet
+from .review_restaurant import ReviewRestaurantViewSet, ResponseReviewRestaurantViewSet
