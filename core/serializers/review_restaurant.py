@@ -25,12 +25,18 @@ class ResponseReviewRestaurantSerializer(ModelSerializer):
 class ReviewRestaurantSerializer(ModelSerializer):
     response = SerializerMethodField()
     client = HiddenField(default=CurrentUserDefault())
+    client_info = SerializerMethodField()
     class Meta:
         model = ReviewRestaurant
         fields = "__all__"
     
     def get_response(self, obj):
         return ResponseReviewRestaurantSerializer(obj.responses.all(), many=True).data
+    
+    def get_client_info(self, obj):
+        client_info = {"name": obj.client.person.name}
+        
+        return client_info
     
     def create(self, validated_data):
         review = super().create(validated_data)
