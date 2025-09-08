@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, HiddenField, CurrentUserDefault
 
-from core.models import ReviewRestaurant, ResponseReviewRestaurant
+from core.models import ReviewRestaurant, ResponseReviewRestaurant, Restaurant
 
 from utils.helpers import verify_group_user
 
@@ -32,3 +32,25 @@ class ReviewRestaurantSerializer(ModelSerializer):
     
     def get_response(self, obj):
         return ResponseReviewRestaurantSerializer(obj.responses.all(), many=True).data
+    
+    def create(self, validated_data):
+        review = super().create(validated_data)
+        restaurant = Restaurant.objects.get(id=review.restaurant.id)
+        quantity_review = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
+        note_restaurant = ((restaurant.note * (quantity_review - 1)) + review.note) / quantity_review
+        restaurant.note = "{:.1f}".format(note_restaurant)
+
+        restaurant.save()
+
+        return review
+    
+    def update(self, instance, validated_data):
+        review = super().update(instance, validated_data)
+        restaurant = Restaurant.objects.get(id=review.restaurant.id)
+        quantity_review = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
+        note_restaurant = ((restaurant.note * (quantity_review - 1)) + review.note) / quantity_review
+        restaurant.note = "{:.1f}".format(note_restaurant)
+
+        restaurant.save()
+
+        return review
