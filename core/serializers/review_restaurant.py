@@ -1,8 +1,7 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, HiddenField, CurrentUserDefault
+from django.db import transaction
 
 from core.models import ReviewRestaurant, ResponseReviewRestaurant, Restaurant
-
-from utils.helpers import verify_group_user
 
 class ResponseReviewRestaurantSerializer(ModelSerializer):
     author_info = SerializerMethodField()
@@ -45,12 +44,20 @@ class ReviewRestaurantSerializer(ModelSerializer):
         return review
     
     def update(self, instance, validated_data):
-        review = super().update(instance, validated_data)
-        restaurant = Restaurant.objects.get(id=review.restaurant.id)
-        quantity_review = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
-        note_restaurant = ((restaurant.note * (quantity_review - 1)) + review.note) / quantity_review
-        restaurant.note = "{:.1f}".format(note_restaurant)
+        with transaction.atomic():
+            old_note = instance.note
+            new_note = validated_data.get('note', old_note)
 
-        restaurant.save()
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
 
-        return review
+            if new_note != old_note:
+                restaurant = instance.restaurant
+                n = ReviewRestaurant.objects.filter(restaurant=restaurant).count()
+                current_avg = float(restaurant.note)
+                new_avg = (current_avg * n - float(old_note) + float(new_note)) / n
+                restaurant.note = "{:.1f}".format(new_avg)
+                restaurant.save()
+
+        return instance

@@ -49,8 +49,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'usuario',
     'uploader',
-    'core',
     'corsheaders',
+    'drf_spectacular',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,13 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
         "config.permissions.CustomDjangoModelPermissions",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Eatly",
+    "DESCRIPTION": "Sistema de gerenciamento do serviço de entregas do Eatly",
+    "VERSION": "1.0.0",
 }
 
 AUTH_USER_MODEL = "usuario.Usuario"

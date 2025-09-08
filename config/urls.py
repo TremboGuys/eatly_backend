@@ -23,6 +23,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
+
 from core.views import *
 
 from usuario.router import router as usuario_router
@@ -51,5 +57,16 @@ urlpatterns = [
     # path('api/users/', include(usuario_router.urls)),
     path('api/user/register/', UserRegisterAPIView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/swagger/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "api/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
 ]
