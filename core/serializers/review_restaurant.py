@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField, HiddenField, CurrentUserDefault
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, HiddenField, CurrentUserDefault, ValidationError
 from django.db import transaction
 
 from core.models import ReviewRestaurant, ResponseReviewRestaurant, Restaurant
@@ -21,6 +21,11 @@ class ResponseReviewRestaurantSerializer(ModelSerializer):
             author['name'] = obj.author.restaurant.name
         
         return author
+
+class UpdateResponseReviewRestaurantSerializer(ModelSerializer):
+    class Meta:
+        model = ResponseReviewRestaurant
+        fields = ['comment']
     
 class ReviewRestaurantSerializer(ModelSerializer):
     response = SerializerMethodField()
@@ -39,16 +44,34 @@ class ReviewRestaurantSerializer(ModelSerializer):
         return client_info
     
     def create(self, validated_data):
-        review = super().create(validated_data)
-        restaurant = Restaurant.objects.get(id=review.restaurant.id)
-        quantity_review = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
-        note_restaurant = ((restaurant.note * (quantity_review - 1)) + review.note) / quantity_review
-        restaurant.note = "{:.1f}".format(note_restaurant)
+        with transaction.atomic():
+            review = super().create(validated_data)
+            restaurant = Restaurant.objects.get(id=review.restaurant.id)
+            quantity_review = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
+            if quantity_review == 0:
+                note_restaurant = review.note
+            else:
+                note_restaurant = ((restaurant.note * (quantity_review - 1)) + review.note) / quantity_review
+            restaurant.note = "{:.1f}".format(note_restaurant)
 
-        restaurant.save()
+            restaurant.save()
 
-        return review
+            return review
     
+    def validate(self, attrs):
+        if hasattr(attrs, "order"):
+            if attrs['order'].client != self.context['request'].user:
+                raise ValidationError({"error": "This order was not placed by this client"})
+            if attrs['order'].restaurant != attrs['restaurant']:
+                raise ValidationError({"error": "This Order was not placed by this restaurant!"})
+        
+        return attrs
+
+class UpdateReviewRestaurantSerializer(ModelSerializer):
+    class Meta:
+        model = ReviewRestaurant
+        fields = ['comment', 'note']
+
     def update(self, instance, validated_data):
         with transaction.atomic():
             old_note = instance.note

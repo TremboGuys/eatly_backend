@@ -50,6 +50,8 @@ router.register(r'coupons', CouponViewSet)
 router.register(r'coupons-client', CouponClientViewSet)
 router.register(r'restaurant-reviews', ReviewRestaurantViewSet)
 router.register(r'response-restaurant-reviews', ResponseReviewRestaurantViewSet)
+router.register(r'deliveryman-reviews', ReviewDeliverymanViewSet)
+router.register(r'response-deliveryman-reviews', ResponseReviewDeliverymanViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

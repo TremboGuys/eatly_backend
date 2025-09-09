@@ -11,4 +11,5 @@ from .product import ProductSerializer
 from .favorite import FavoriteSerializer
 from .order import OrderListSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
 from .coupon import CouponSerializer, CouponClientSerializer, CouponClientOrderSerializer
-from .review_restaurant import ReviewRestaurantSerializer, ResponseReviewRestaurantSerializer
+from .review_restaurant import ReviewRestaurantSerializer, UpdateReviewRestaurantSerializer, ResponseReviewRestaurantSerializer, UpdateResponseReviewRestaurantSerializer
+from .review_deliveryman import ReviewDeliverymanSerializer, UpdateReviewDeliverymanSerializer, ResponseReviewDeliverymanSerializer, UpdateResponseReviewDeliverymanSerializer

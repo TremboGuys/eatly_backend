@@ -3,25 +3,39 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import ReviewRestaurant, ResponseReviewRestaurant, Restaurant
-from core.serializers import ReviewRestaurantSerializer, ResponseReviewRestaurantSerializer
+from core.serializers import ReviewRestaurantSerializer, UpdateReviewRestaurantSerializer, ResponseReviewRestaurantSerializer, UpdateResponseReviewRestaurantSerializer
 
 class ReviewRestaurantViewSet(ModelViewSet):
     queryset = ReviewRestaurant.objects.all()
-    serializer_class = ReviewRestaurantSerializer
+    
+    def get_serializer_class(self):
+        if self.action == "partial_update":
+            return UpdateReviewRestaurantSerializer
+        else:
+            return ReviewRestaurantSerializer
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        instance = ReviewRestaurant.objects.get(id=instance.id)
 
         restaurant = Restaurant.objects.get(id=instance.restaurant.id)
         quantity_reviews = ReviewRestaurant.objects.filter(restaurant=restaurant.id).count()
-        note_restaurant = ((restaurant.note * quantity_reviews) - instance.note) / (quantity_reviews - 1)
-        restaurant.note = "{:.1f}".format(note_restaurant)
+        if quantity_reviews == 1:
+            note_restaurant = 5.0
+        else:
+            note_restaurant = ((restaurant.note * quantity_reviews) - instance.note) / (quantity_reviews - 1)
+        restaurant.note = note_restaurant
         restaurant.save()
 
         instance.delete()
 
-        return Response({"message": "Restaurant deleted with success!"}, status=status.HTTP_204_NO_CONTENT)      
+        return Response({"message": "Review of restaurant deleted with success!"}, status=status.HTTP_204_NO_CONTENT)      
 
 class ResponseReviewRestaurantViewSet(ModelViewSet):
     queryset = ResponseReviewRestaurant.objects.all()
-    serializer_class = ResponseReviewRestaurantSerializer
+    
+    def get_serializer_class(self):
+        if self.action == "partial_update":
+            return UpdateResponseReviewRestaurantSerializer
+        else:
+            return ResponseReviewRestaurantSerializer
