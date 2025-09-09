@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 from datetime import timedelta
+import dj_database_url
+from corsheaders.defaults import default_headers
 """
 Django settings for config project.
 
@@ -15,7 +17,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+
+load_dotenv()
 
 load_dotenv()
 
@@ -63,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -94,7 +98,6 @@ DATABASES = {
     )
 }
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -121,7 +124,10 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Corrigido para suportar collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -146,10 +152,13 @@ SPECTACULAR_SETTINGS = {
 
 AUTH_USER_MODEL = "usuario.Usuario"
 
-# CORS (corrigido)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "https://eatly-frontend-trza.onrender.com",
 ]
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "skipauth"
+)
