@@ -11,3 +11,5 @@ from .favorite import Favorite
 from .order import Order, ProductOrder
 from .coupon import Coupon, CouponClient, CouponClientOrder
 from .orderStatusLog import OrderStatusLog
+from .review_restaurant import ReviewRestaurant, ResponseReviewRestaurant
+from .review_deliveryman import ReviewDeliveryman, ResponseReviewDeliveryman

@@ -7,3 +7,8 @@ class RestaurantSerializer(ModelSerializer):
     class Meta:
         model = Restaurant
         fields = "__all__"
+
+class CreateRestaurantSerializer(ModelSerializer):
+    class Meta:
+        model = Restaurant
+        fields = "__all__"

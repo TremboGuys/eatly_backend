@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+import dj_database_url
 from datetime import timedelta
 import dj_database_url
 from corsheaders.defaults import default_headers
@@ -16,6 +17,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+
+load_dotenv()
 
 load_dotenv()
 
@@ -49,8 +52,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'usuario',
     'uploader',
-    'core',
     'corsheaders',
+    'drf_spectacular',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -131,12 +135,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Django REST Framework config
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-    "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
         "config.permissions.CustomDjangoModelPermissions",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Eatly",
+    "DESCRIPTION": "Sistema de gerenciamento do serviço de entregas do Eatly",
+    "VERSION": "1.0.0",
 }
 
 AUTH_USER_MODEL = "usuario.Usuario"
