@@ -3,7 +3,7 @@ from .category import CategorySerializer
 from .telephone import TelephoneSerializer
 from .address import AddressSerializer
 from .natural_person import NaturalPersonSerializer
-from .restaurant import RestaurantSerializer, CreateRestaurantSerializer
+from .restaurant import RestaurantSerializer, CreateRestaurantSerializer, RetrieveRestaurantSerializer
 from .vehicle import VehicleSerializer
 from .mark import MarkSerializer
 from .color import ColorSerializer

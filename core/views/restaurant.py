@@ -3,8 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import Restaurant
-from core.serializers import RestaurantSerializer, CreateRestaurantSerializer
+from core.serializers import RestaurantSerializer, CreateRestaurantSerializer, RetrieveRestaurantSerializer
 
 class RestaurantViewSet(ModelViewSet):
     queryset = Restaurant.objects.all()
-    serializer_class = RestaurantSerializer
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return RetrieveRestaurantSerializer
+        return RestaurantSerializer
