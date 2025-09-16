@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import Product
+from core.serializers import ProductCategorySerializer
 from utils.helpers import create_image
 
 class ProductSerializer(ModelSerializer):
@@ -46,3 +47,15 @@ class ProductSerializer(ModelSerializer):
             if attrs['file'] == None:
                 raise ValidationError({"error": "File is missing!"})
         return attrs
+
+class ListProductSerializer(ModelSerializer):
+    categories = ProductCategorySerializer(many=True)
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'is_adult', 'url_file', 'categories']
+
+class RetrieveProductSerializer(ModelSerializer):
+    categories = ProductCategorySerializer(many=True)
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'is_adult', 'url_file', 'categories']
