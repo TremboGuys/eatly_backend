@@ -10,10 +10,11 @@ class Product(models.Model):
         ARCHIVED = 3, "Archived"
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=500)
-    value = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
     is_adult = models.BooleanField()
     status = models.IntegerField(choices=Status.choices, default=Status.ACTIVE)
     url_file = models.URLField(null=True, blank=True)
+    public_id_cloudinary = models.CharField(max_length=40)
     restaurant = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="products")
     categories = models.ManyToManyField(Category, related_name="+")
 

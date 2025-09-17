@@ -17,6 +17,7 @@ class Vehicle(models.Model):
     active = models.BooleanField(default=True)
     is_validate = models.BooleanField(default=False)
     url_crlv = models.URLField(null=True, blank=True)
+    public_id_cloudinary = models.CharField(max_length=40)
 
     def __str__(self):
         return f"{self.model}"

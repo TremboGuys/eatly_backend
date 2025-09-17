@@ -30,3 +30,8 @@ class CategorySerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name']

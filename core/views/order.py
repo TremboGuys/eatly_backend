@@ -6,7 +6,19 @@ from core.models import Order
 from core.serializers import OrderListSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
 
 class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return Order.objects.all()
+        if user.groups.filter(name='client'):
+            return Order.objects.filter(client=user)
+        elif user.groups.filter(name='restaurant'):
+            return Order.objects.filter(restaurant=user.restaurant.id)
+        elif user.groups.filter(name='deliveryman'):
+            return Order.objects.filter(deliveryman=user)
+        else:
+            return Order.objects.none()
 
     def get_serializer_class(self):
         if self.action == "list":
