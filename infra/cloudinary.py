@@ -22,15 +22,34 @@ class UploadCloudinary:
         try:
             im = cloudinary.uploader.upload(base64_image)
         except Exception as error:
-            raise APIException(f'Upload error: {error}')
+            raise APIException(f'Error uploading image: {error}')
 
+        return im
+    
+    def update_image(self, file, public_id):
+        base64_image = image_to_base64(file=file)
+
+        try:
+            im = cloudinary.uploader.upload(base64_image, public_id=public_id)
+        except Exception as error:
+            raise APIException(f'Error updating image: {error}')
+        
         return im
     
     def create_pdf(self, file):
         verify_pdf(file=file)
 
         try:
-            pdf = cloudinary.uploader.upload(file, use_filename=True, unique_filename=False)
+            pdf = cloudinary.uploader.upload(file, unique_filename=False)
         except Exception as error:
-            raise APIException(f'Upload error: {error}')
+            raise APIException(f'Error uploading pdf: {error}')
+        return pdf
+    
+    def update_pdf(self, file, public_id):
+        verify_pdf(file=file)
+
+        try:
+            pdf = cloudinary.uploader.upload(file, public_id=public_id, unique_filename=True)
+        except Exception as error:
+            raise APIException(f'Error updating PDF: ', { error })
         return pdf

@@ -19,7 +19,25 @@ def create_image(file):
     uploader = UploadCloudinary()
     response = uploader.create_image(file=file)
 
-    return response['secure_url']
+    return response
+
+def update_image(file, public_id):
+    uploader = UploadCloudinary()
+    response = uploader.update_image(file=file, public_id=public_id)
+
+    return response
+
+def create_pdf(file):
+    uploader = UploadCloudinary()
+    response = uploader.create_pdf(file=file)
+
+    return response
+
+def update_pdf(file, public_id):
+    uploader = UploadCloudinary()
+    response = uploader.update_pdf(file=file, public_id=public_id)
+
+    return response
 
 def relate_user_group(user_data, id):
     if user_data['user']['role'] == "client":

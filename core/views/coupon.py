@@ -8,7 +8,13 @@ class CouponViewSet(ModelViewSet):
     serializer_class = CouponSerializer
 
 class CouponClientViewSet(ModelViewSet):
-    queryset = CouponClient.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return CouponClient.objects.all()
+        return CouponClient.objects.filter(client=user)
+    
     serializer_class = CouponClientSerializer
 
 class CouponClientOrderViewSet(ModelViewSet):
