@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.db import transaction
 
-from core.serializers import UserRegisterSerializer, TelephoneSerializer
+from usuario.models import Usuario
+from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer
 from utils.helpers import relate_user_group
 
 class UserRegisterAPIView(APIView):
@@ -24,3 +25,15 @@ class UserRegisterAPIView(APIView):
             serializerTel.save()
 
             return Response({"message": "User created with success", "userId": user.id}, status=status.HTTP_201_CREATED)
+
+class UserListAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        user = self.request.user
+
+        queryset = Usuario.objects.get(id=user.id)
+
+        serializer = ListUserSerializer(queryset, many=False)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

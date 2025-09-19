@@ -1,4 +1,4 @@
-from .user import UserRegisterSerializer
+from .user import UserRegisterSerializer, ListUserSerializer
 from .category import CategorySerializer, ProductCategorySerializer
 from .telephone import TelephoneSerializer
 from .address import AddressSerializer

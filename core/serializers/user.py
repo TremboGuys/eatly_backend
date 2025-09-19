@@ -35,3 +35,15 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"role": "Group not found"})
         
         return user
+
+class ListUserSerializer(serializers.ModelSerializer):
+    group = serializers.SerializerMethodField()
+
+    def get_group(self, obj):
+        group = ""
+        for g in obj.groups.all():
+            group = g.name
+        return group
+    class Meta:
+        model = Usuario
+        fields = ['email', 'group']
