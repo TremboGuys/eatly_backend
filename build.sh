@@ -2,9 +2,10 @@
 # Sai do script se houver algum erro
 set -o errexit
 
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+export PATH=$HOME/.cargo/bin:$PATH
 export CARGO_HOME=$HOME/.cargo
 export RUSTUP_HOME=$HOME/.rustup
-export PATH=$CARGO_HOME/bin:$PATH
 
 # Atualiza o pip
 pip install --upgrade pip
