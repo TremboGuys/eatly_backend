@@ -4,27 +4,45 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.db import transaction
 
-from core.serializers import UserRegisterSerializer, NaturalPersonSerializer, TelephoneSerializer
+from usuario.models import Usuario
+from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer, UpdateUserSerializer
+from utils.helpers import relate_user_group, create_image, update_image
 
 class UserRegisterAPIView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         with transaction.atomic():
-            npModel = {"name": request.data.pop('name'), "date_birth": request.data.pop('date_birth')}
-            cellphoneModel = {"telephone_type": 1, "number_e164": request.data.pop('cellphone'), "is_principal": True}
-            serializerUser = UserRegisterSerializer(data=request.data)
+            data = request.data.copy()
+            data['file'] = request.FILES.get("file", None)
+            serializerUser = UserRegisterSerializer(data=data)
             serializerUser.is_valid(raise_exception=True)
             user = serializerUser.save()
+                
+            # relate_user_group(request.data, user.id)
 
-            npModel['user'] = user.id
-            cellphoneModel['user'] = user.id
+            return Response(user.id, status=status.HTTP_201_CREATED)
 
-            serializerNP = NaturalPersonSerializer(data=npModel)
-            serializerNP.is_valid(raise_exception=True)
-            serializerNP.save()
+class UserListAPIView(APIView):
+    permission_classes = [AllowAny]
 
-            serializerTel = TelephoneSerializer(data=cellphoneModel)
-            serializerTel.is_valid(raise_exception=True)
-            serializerTel.save()
+    def get(self, request, format=None):
+        user = self.request.user
 
-            return Response({"message": "User created with success", "userId": user.id}, status=status.HTTP_201_CREATED)
+        queryset = Usuario.objects.get(id=user.id)
+
+        serializer = ListUserSerializer(queryset, many=False)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserUpdateAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def patch(self, request):
+        user = self.request.user
+        file = request.FILES.get('file', None)
+        request.data['file'] = file
+
+        serializer = UpdateUserSerializer(instance=user, data=request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

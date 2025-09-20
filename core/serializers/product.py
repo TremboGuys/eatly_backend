@@ -1,9 +1,10 @@
-from rest_framework.serializers import ModelSerializer, ValidationError, ImageField, HiddenField, CurrentUserDefault
+from rest_framework.serializers import ModelSerializer, ValidationError, ImageField, HiddenField, CurrentUserDefault, SerializerMethodField
 from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import Product
-from utils.helpers import create_image
+from core.serializers import ProductCategorySerializer
+from utils.helpers import create_image, update_image
 
 class ProductSerializer(ModelSerializer):
     file = ImageField(write_only=True)
@@ -14,7 +15,9 @@ class ProductSerializer(ModelSerializer):
     
     def create(self, validated_data):
         categories = validated_data.pop("categories", [])
-        validated_data['url_file'] = create_image(validated_data.pop('file'))
+        image = create_image(validated_data.pop('file'))
+        validated_data['url_file'] = image['secure_url']
+        validated_data['public_id_cloudinary'] = image['public_id']
 
         product = Product.objects.create(**validated_data)
         
@@ -29,7 +32,9 @@ class ProductSerializer(ModelSerializer):
         file = validated_data.pop("file", None)
         categories = validated_data.pop("categories", [])
         if file is not None:
-            validated_data['url_file'] = create_image(validated_data.pop('file'))
+            image = update_image(file=file, public_id=instance.public_id_cloudinary)
+            validated_data['url_file'] = image['secure_url']
+            validated_data['public_id'] = image['public_id']
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -46,3 +51,21 @@ class ProductSerializer(ModelSerializer):
             if attrs['file'] == None:
                 raise ValidationError({"error": "File is missing!"})
         return attrs
+
+class ListProductSerializer(ModelSerializer):
+    categories = ProductCategorySerializer(many=True)
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'is_adult', 'url_file', 'categories']
+
+class RetrieveProductSerializer(ModelSerializer):
+    categories = ProductCategorySerializer(many=True)
+    restaurant = SerializerMethodField()
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'restaurant', 'is_adult', 'url_file', 'categories']
+    
+    def get_restaurant(self, obj):
+        restaurant = {"id": obj.restaurant.restaurant.id, "name": obj.restaurant.restaurant.name}
+
+        return restaurant

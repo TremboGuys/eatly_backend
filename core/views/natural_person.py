@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 from core.models import NaturalPerson
 from core.serializers import NaturalPersonSerializer
@@ -9,6 +10,7 @@ class NaturalPersonViewSet(ModelViewSet):
     queryset = NaturalPerson.objects.all()
     serializer_class = NaturalPersonSerializer
     http_method_names = ['get', 'post', 'patch']
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)

@@ -8,6 +8,8 @@ from .managers import CustomUserManager
 class Usuario(AbstractUser):
     username = None
     email = models.EmailField(_("e-mail address"), unique=True)
+    photo = models.URLField(null=False, blank=True)
+    public_id_cloudinary = models.CharField(max_length=40, null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
