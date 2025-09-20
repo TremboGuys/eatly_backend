@@ -40,6 +40,7 @@ router.register(r'telephones', TelephoneViewSet)
 router.register(r'addresses', AddressViewSet, basename='address')
 router.register(r'naturalPersons', NaturalPersonViewSet)
 router.register(r'restaurants', RestaurantViewSet)
+router.register(r'recently-restaurant-views', RecentlyViewsViewSet, basename='recently-views')
 router.register(r'vehicles', VehicleViewSet, basename='vehicle')
 router.register(r'marks', MarkViewSet)
 router.register(r'colors', ColorViewSet)
@@ -57,7 +58,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     # path('api/users/', include(usuario_router.urls)),
+    path('api/user/', UserListAPIView.as_view()),
     path('api/user/register/', UserRegisterAPIView.as_view()),
+    path('api/user/update/', UserUpdateAPIView.as_view()),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

@@ -1,9 +1,9 @@
-from .user import UserRegisterSerializer
+from .user import UserRegisterSerializer, ListUserSerializer, UpdateUserSerializer
 from .category import CategorySerializer, ProductCategorySerializer
 from .telephone import TelephoneSerializer
 from .address import AddressSerializer
 from .natural_person import NaturalPersonSerializer
-from .restaurant import RestaurantSerializer, CreateRestaurantSerializer, RetrieveRestaurantSerializer
+from .restaurant import RestaurantSerializer, CreateRestaurantSerializer, RetrieveRestaurantSerializer, ListRestaurantSerializer, RecentlyViewsSerializer, ListRecentlyViewsSerializer
 from .vehicle import VehicleSerializer, UpdateVehicleSerializer
 from .mark import MarkSerializer
 from .color import ColorSerializer

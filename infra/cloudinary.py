@@ -26,6 +26,16 @@ class UploadCloudinary:
 
         return im
     
+    def create_image_user(self, file):
+        base64_image = image_to_base64(file)
+
+        try:
+            im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+        except Exception as error:
+            raise APIException(f'Error uploading image of user: {error}')
+
+        return im
+    
     def update_image(self, file, public_id):
         base64_image = image_to_base64(file=file)
 
@@ -36,6 +46,15 @@ class UploadCloudinary:
         
         return im
     
+    def update_image_user(self, file, public_id):
+        base64_image = image_to_base64(file)
+
+        try:
+            im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+        except Exception as error:
+            raise APIException(f'Error updating image of user: {error}')
+
+        return im
     def create_pdf(self, file):
         verify_pdf(file=file)
 
