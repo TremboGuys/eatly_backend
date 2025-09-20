@@ -1,9 +1,9 @@
-from .user import UserRegisterAPIView, UserListAPIView
+from .user import UserRegisterAPIView, UserListAPIView, UserUpdateAPIView
 from .category import CategoryViewSet
 from .telephone import TelephoneViewSet
 from .address import AddressViewSet
 from .natural_person import NaturalPersonViewSet
-from .restaurant import RestaurantViewSet
+from .restaurant import RestaurantViewSet, RecentlyViewsViewSet
 from .vehicle import VehicleViewSet
 from .mark import MarkViewSet
 from .color import ColorViewSet

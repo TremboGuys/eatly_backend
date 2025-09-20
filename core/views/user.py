@@ -5,26 +5,22 @@ from rest_framework.permissions import AllowAny
 from django.db import transaction
 
 from usuario.models import Usuario
-from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer
-from utils.helpers import relate_user_group
+from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer, UpdateUserSerializer
+from utils.helpers import relate_user_group, create_image, update_image
 
 class UserRegisterAPIView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         with transaction.atomic():
-            serializerUser = UserRegisterSerializer(data=request.data['user'])
+            data = request.data.copy()
+            data['file'] = request.FILES.get("file", None)
+            serializerUser = UserRegisterSerializer(data=data)
             serializerUser.is_valid(raise_exception=True)
             user = serializerUser.save()
+                
+            # relate_user_group(request.data, user.id)
 
-            relate_user_group(request.data, user.id)
-
-            request.data['telephone']['user'] = user.id
-
-            serializerTel = TelephoneSerializer(data=request.data['telephone'])
-            serializerTel.is_valid(raise_exception=True)
-            serializerTel.save()
-
-            return Response({"message": "User created with success", "userId": user.id}, status=status.HTTP_201_CREATED)
+            return Response(user.id, status=status.HTTP_201_CREATED)
 
 class UserListAPIView(APIView):
     permission_classes = [AllowAny]
@@ -36,4 +32,17 @@ class UserListAPIView(APIView):
 
         serializer = ListUserSerializer(queryset, many=False)
 
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserUpdateAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def patch(self, request):
+        user = self.request.user
+        file = request.FILES.get('file', None)
+        request.data['file'] = file
+
+        serializer = UpdateUserSerializer(instance=user, data=request.data)
+        serializer.is_valid()
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
