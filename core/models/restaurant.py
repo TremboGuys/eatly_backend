@@ -18,7 +18,7 @@ class Restaurant(models.Model):
 class RecentlyViews(models.Model):
     client = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="recently_views")
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name="+")
-    viewed_at = models.DateTimeField(auto_now_add=True)
+    viewed_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.client.id} - {self.restaurant.id}"
