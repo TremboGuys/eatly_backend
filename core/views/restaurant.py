@@ -26,9 +26,18 @@ class RestaurantViewSet(ModelViewSet):
         if self.action == "list":
             return ListRestaurantSerializer
         return RestaurantSerializer
+    
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
 class RecentlyViewsViewSet(ModelViewSet):
-    queryset = RecentlyViews.objects.all()
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return RecentlyViews.objects.all()
+        else:
+            return RecentlyViews.objects.filter(client=user.id).order_by("viewed_at")
     
     def get_serializer_class(self):
         if self.action == "list":
@@ -38,7 +47,13 @@ class RecentlyViewsViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         user = self.request.user
-        query = RecentlyViews.objects.filter(client=user.id).order_by("viewed_at")
+        query = RecentlyViews.objects.filter(client=user.id).order_by("-viewed_at")
         paginator = Paginator(query, 10)
         serializer = ListRecentlyViewsSerializer(paginator.get_page(1), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def create(self, request, *args, **kwargs):
+        if (self.get_queryset().count() == 20):
+            self.get_queryset().last().delete()
+            RecentlyViews.save()
+        return super().create(request, *args, **kwargs)
