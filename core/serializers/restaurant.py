@@ -42,17 +42,23 @@ class CreateRestaurantSerializer(ModelSerializer):
 
 class RecentlyViewsSerializer(ModelSerializer):
     client = HiddenField(default=CurrentUserDefault())
+    restaurant_data = SerializerMethodField()
+
     class Meta:
         model = RecentlyViews
         fields = "__all__"
+    
+    def get_restaurant_data(self, obj):
+        serializer = ListRestaurantSerializer(obj.restaurant)
+        return serializer.data
 
 class ListRecentlyViewsSerializer(ModelSerializer):
-    restaurant = SerializerMethodField()
+    restaurant_data = SerializerMethodField()
 
     class Meta:
         model = RecentlyViews
-        fields = ["restaurant"]
+        fields = ["id", "restaurant_data"]
 
-    def get_restaurant(self, obj):
+    def get_restaurant_data(self, obj):
         serializer = ListRestaurantSerializer(obj.restaurant)
         return serializer.data
