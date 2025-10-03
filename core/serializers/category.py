@@ -12,7 +12,9 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     def create(self, validated_data):
-        validated_data['url_image'] = create_image(validated_data.pop('file'))
+        photo = create_image(validated_data.pop('file'))
+        validated_data['url_image'] = photo['secure_url']
+        validated_data['public_id_cloudinary'] = photo['public_id']
 
         return Category.objects.create(**validated_data)
     
