@@ -1,3 +1,4 @@
+from itertools import groupby
 from rest_framework.serializers import ModelSerializer, ValidationError, SerializerMethodField, HiddenField, CurrentUserDefault, IntegerField
 
 from core.models import Restaurant, RecentlyViews, ReviewRestaurant
@@ -22,7 +23,6 @@ class ListRestaurantSerializer(ModelSerializer):
 class RetrieveRestaurantSerializer(ModelSerializer):
     photo = SerializerMethodField()
     products = SerializerMethodField()
-    categories = CategorySerializer(many=True)
     total_reviews = IntegerField(read_only=True)
     class Meta:
         model = Restaurant
@@ -30,10 +30,37 @@ class RetrieveRestaurantSerializer(ModelSerializer):
 
     def get_products(self, obj):
         from core.serializers import ListProductSerializer
-        return ListProductSerializer(obj.user.products.all(), many=True).data
+
+        products = obj.user.products.prefetch_related("categories").all()
+
+        result = []
+        groups = {}
+
+        for product in products:
+            for category in product.categories.all():
+                if category.name not in groups:
+                    groups[category.name] = []
+                groups[category.name].append({
+                    "id": product.id,
+                    "name": product.name,
+                    "description": product.description,
+                    "price": product.price,
+                    "is_adult": product.is_adult,
+                    "url_file": product.url_file,
+                })
+        
+        for category, products in groups.items():
+            result.append({
+                "category": category,
+                "products": products
+            })
+        
+        return result
     
     def get_photo(self, obj):
         return obj.user.photo
+    
+    # Fazer um def get_categories com um set para categories
 
 class CreateRestaurantSerializer(ModelSerializer):
     class Meta:
