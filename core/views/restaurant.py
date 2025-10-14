@@ -22,7 +22,7 @@ class RestaurantViewSet(ModelViewSet):
         expression = None
 
         for key, value in request.GET.items():
-            if key == "search":
+            if key == "search" or key == "page":
                 continue
             if value == "bigger":
                 part = F(key) * weight_params_map[key]
