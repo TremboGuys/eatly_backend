@@ -5,6 +5,7 @@ from django.contrib.auth.models import Group
 from usuario.models import Usuario
 from django.contrib.auth.hashers import make_password
 from utils.helpers import create_image_user, update_image_user
+from django.db import transaction
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -46,6 +47,36 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+
+class UserRegisterGoogleSerializer(serializers.ModelSerializer):
+    role = serializers.CharField(write_only=True)
+    url_image = serializers.URLField(write_only=True)
+    photo = serializers.URLField(required=False)
+    class Meta:
+        model = Usuario
+        fields = ['id', 'email', 'role', 'url_image', 'photo']
+    
+    def create(self, validated_data):
+        with transaction.atomic():
+            email = validated_data.pop('email', None)
+            user = Usuario.objects.create_user(email=email, password=None)
+            user.set_unusable_password()
+
+            try:
+                group = Group.objects.get(name=validated_data['role'])
+                user.groups.add(group)
+            except:
+                raise serializers.ValidationError("Group not found!")
+            
+            if validated_data['url_image'] is not None:
+                photo = create_image_user(validated_data['url_image'], image_is_url=True)
+                user.photo = photo['secure_url']
+                user.public_id_cloudinary = photo['public_id']
+            
+            user.save()
+
+            return user
+
 
 class ListUserSerializer(serializers.ModelSerializer):
     group = serializers.SerializerMethodField()

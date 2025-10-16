@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "Joaovictor23t4", email = "joaovictor239090@gmail.com"},
 ]
-dependencies = ["django>=5.2.6", "setuptools>=80.9.0", "djangorestframework>=3.16.0", "graphviz>=0.20.3", "Pillow>=11.2.1", "python-magic>=0.4.27", "python-magic-bin>=0.4.14; sys_platform == \"win32, darwin\"", "cloudinary>=1.44.0", "python-dotenv>=1.1.0", "gunicorn>=23.0.0", "uvicorn>=0.34.3", "django-cors-headers>=4.7.0", "djangorestframework-simplejwt>=5.5.1", "psycopg2-binary>=2.9.10", "dj-database-url>=3.0.1", "whitenoise[brotli]>=6.9.0", "django-filter>=25.1", "drf-spectacular>=0.28.0"]
+dependencies = ["django>=5.2.6", "setuptools>=80.9.0", "djangorestframework>=3.16.0", "graphviz>=0.20.3", "Pillow>=11.2.1", "python-magic>=0.4.27", "python-magic-bin>=0.4.14; sys_platform == \"win32, darwin\"", "cloudinary>=1.44.0", "python-dotenv>=1.1.0", "gunicorn>=23.0.0", "uvicorn>=0.34.3", "django-cors-headers>=4.7.0", "djangorestframework-simplejwt>=5.5.1", "psycopg2-binary>=2.9.10", "dj-database-url>=3.0.1", "whitenoise[brotli]>=6.9.0", "django-filter>=25.1", "drf-spectacular>=0.28.0", "dj-rest-auth>=7.0.1", "google-auth>=2.41.1", "requests>=2.32.5", "django-extensions>=4.1"]
 requires-python = "==3.12.*"
 readme = "README.md"
 license = {text = "MIT"}
