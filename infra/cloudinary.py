@@ -26,11 +26,15 @@ class UploadCloudinary:
 
         return im
     
-    def create_image_user(self, file):
-        base64_image = image_to_base64(file)
+    def create_image_user(self, file, image_is_url=False):
+        if not image_is_url:
+            base64_image = image_to_base64(file)
 
         try:
-            im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+            if image_is_url:
+                im = cloudinary.uploader.upload(file, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+            else:
+                im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
         except Exception as error:
             raise APIException(f'Error uploading image of user: {error}')
 
@@ -46,11 +50,15 @@ class UploadCloudinary:
         
         return im
     
-    def update_image_user(self, file, public_id):
-        base64_image = image_to_base64(file)
+    def update_image_user(self, file, public_id, image_is_url=False):
+        if not image_is_url:
+            base64_image = image_to_base64(file)
 
         try:
-            im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+            if image_is_url:
+                im = cloudinary.uploader.upload(image_is_url, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+            else:
+                im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
         except Exception as error:
             raise APIException(f'Error updating image of user: {error}')
 

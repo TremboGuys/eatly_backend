@@ -1,4 +1,5 @@
 from .user import UserRegisterAPIView, UserListAPIView, UserUpdateAPIView
+from .google import UserCreateByGoogleTokenAPIView, LoginByGoogleAPIView
 from .category import CategoryViewSet
 from .telephone import TelephoneViewSet
 from .address import AddressViewSet

@@ -21,9 +21,9 @@ def create_image(file):
 
     return response
 
-def create_image_user(file):
+def create_image_user(file, image_is_url=False):
     uploader = UploadCloudinary()
-    response = uploader.create_image_user(file=file)
+    response = uploader.create_image_user(file=file, image_is_url=image_is_url)
 
     return response
 
@@ -33,9 +33,9 @@ def update_image(file, public_id):
 
     return response
 
-def update_image_user(file, public_id):
+def update_image_user(file, public_id, image_is_url=False):
     uploader = UploadCloudinary()
-    response = uploader.update_image_user(file=file, public_id=public_id)
+    response = uploader.update_image_user(file=file, public_id=public_id, image_is_url=image_is_url)
 
     return response
 

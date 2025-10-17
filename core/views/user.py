@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import transaction
 
 from usuario.models import Usuario
@@ -17,10 +18,19 @@ class UserRegisterAPIView(APIView):
             serializerUser = UserRegisterSerializer(data=data)
             serializerUser.is_valid(raise_exception=True)
             user = serializerUser.save()
+            user.is_active = True
+            user.save()
+
+            refresh = RefreshToken.for_user(user)
+
+            data = {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh)
+            }
                 
             # relate_user_group(request.data, user.id)
 
-            return Response(user.id, status=status.HTTP_201_CREATED)
+            return Response(data=data, status=status.HTTP_201_CREATED)
 
 class UserListAPIView(APIView):
     permission_classes = [AllowAny]
