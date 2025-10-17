@@ -2,10 +2,10 @@
 # Sai do script se houver algum erro
 set -o errexit
 
-# Atualiza o pip
-pip install --upgrade pip
+# Atualiza o pip e ferramentas de build
+pip install --upgrade pip setuptools wheel
 
-# Instala as dependências
+# Instala dependências do projeto
 pip install -r requirements.txt
 
 # Coleta os arquivos estáticos

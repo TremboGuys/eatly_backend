@@ -14,7 +14,7 @@ class Product(models.Model):
     is_adult = models.BooleanField()
     status = models.IntegerField(choices=Status.choices, default=Status.ACTIVE)
     url_file = models.URLField(null=True, blank=True)
-    public_id_cloudinary = models.CharField(max_length=40)
+    public_id_cloudinary = models.CharField(max_length=40, default="")
     restaurant = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="products")
     categories = models.ManyToManyField(Category, related_name="+")
 
