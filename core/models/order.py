@@ -15,6 +15,11 @@ class Order(models.Model):
     totalValue = models.DecimalField(max_digits=8, decimal_places=2)
     dateTime = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
+    produtct = [
+        {
+
+        }
+    ]
 
     def __str__(self):
         return f"{self.id}"
@@ -24,4 +29,3 @@ class ProductOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="products", null=True, blank=True)
     quantity = models.PositiveSmallIntegerField()
     observation = models.TextField(max_length=200, blank=True, null=True)
-

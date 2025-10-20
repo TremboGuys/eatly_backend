@@ -24,3 +24,8 @@ class Usuario(AbstractUser):
         verbose_name = "Usuário"
         verbose_name_plural = "Usuários"
         ordering = ["-date_joined"]
+
+class EmailVerificationUser(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    date_time = models.DateTimeField(auto_now_add=True)

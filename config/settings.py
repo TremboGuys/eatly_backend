@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_spectacular',
     'django_filters',
+    'django_celery_results',
     'core',
 ]
 
@@ -162,3 +163,25 @@ CORS_ALLOW_HEADERS = (
     *default_headers,
     "skipauth"
 )
+
+CELERY_TIMEZONE = "America/Sao_Paulo"
+CELERY_BROCKER_URL="redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND="redis://127.0.0.1:6379/0"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "COMPRESSOR_CLASS": "django_redis.compressors.PyLibmcCompressor",
+        }
+    }
+}
+
+EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST_USER="joaovictor239090@gmail.com"
+EMAIL_HOST_PASSWORD=os.getenv("APP_PASSWORD")

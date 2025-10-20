@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from django.contrib.auth.models import Group
 
-from usuario.models import Usuario
+from usuario.models import Usuario, EmailVerificationUser
 from django.contrib.auth.hashers import make_password
 from utils.helpers import create_image_user, update_image_user
 from django.db import transaction
@@ -47,6 +47,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+
+class EmailVerificationUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailVerificationUser
+        fields = "__all__"
 
 class UserRegisterGoogleSerializer(serializers.ModelSerializer):
     role = serializers.CharField(write_only=True)
