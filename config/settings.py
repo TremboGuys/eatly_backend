@@ -162,3 +162,12 @@ CORS_ALLOW_HEADERS = (
     *default_headers,
     "skipauth"
 )
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
