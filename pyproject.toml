@@ -33,3 +33,4 @@ distribution = false
     update = "pdm update"
     install = "pdm install"
     graph = "python manage.py graph_models -a -o graphviz.png"
+    export-reqs = "pdm export -f requirements --without-hashes -o requirements.txt"
