@@ -1,13 +1,18 @@
+import random
+import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view
+from rest_framework.exceptions import ValidationError
+from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import transaction
+from django.core.signing import Signer
 
 from usuario.models import Usuario
 from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer, UpdateUserSerializer
-from utils.helpers import relate_user_group, create_image, update_image
+from utils.helpers import send_email_register
 
 class UserRegisterAPIView(APIView):
     permission_classes = [AllowAny]
@@ -18,19 +23,42 @@ class UserRegisterAPIView(APIView):
             serializerUser = UserRegisterSerializer(data=data)
             serializerUser.is_valid(raise_exception=True)
             user = serializerUser.save()
+
+            signer = Signer()
+            token = signer.sign(user.id)
+
+            send_email_register(user.id, token)
+            # transaction.on_commit(lambda: send_email_register.delay(user.id))
+
+            return Response(status=status.HTTP_201_CREATED)
+
+class CodeAPIView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        token = request.data.get('token', None)
+        signer = Signer()
+
+        if token is None:
+            return Response(data={"error_code": "TOKEN_IS_NULL", "message": "Token not found!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            id = signer.unsign(token)
+        except Exception as error:
+            return Response(data={"error_code": "TOKEN_INVALID", "message": f"{error}"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = Usuario.objects.get(id=id)
+
+        if user is None:
+            raise Response(data={"error_code": "USER_NOT_EXIST", "message": "User not found!"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if user.is_active:
+            return Response(data={"error_code": "USER_ALREADY_ACTIVE", "message": "User is already active"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
             user.is_active = True
             user.save()
 
-            refresh = RefreshToken.for_user(user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-            data = {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh)
-            }
-                
-            # relate_user_group(request.data, user.id)
-
-            return Response(data=data, status=status.HTTP_201_CREATED)
 
 class UserListAPIView(APIView):
     permission_classes = [AllowAny]
