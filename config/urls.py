@@ -42,6 +42,7 @@ urlpatterns = [
     # path('api/users/', include(usuario_router.urls)),
     path('api/user/', UserListAPIView.as_view()),
     path('api/user/register/', UserRegisterAPIView.as_view()),
+    path('api/user/register/code/', CodeAPIView.as_view(), name="code_active_user"),
     path('api/user/update/', UserUpdateAPIView.as_view()),
     path('api/user/register/google/', UserCreateByGoogleTokenAPIView.as_view(), 
     name="register_user_google"),

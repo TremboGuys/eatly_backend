@@ -1,6 +1,5 @@
 from usuario.models import Usuario
 from django.core.mail import send_mail
-from celery import shared_task
 from django.core.exceptions import ValidationError
 from infra.cloudinary import UploadCloudinary
 
@@ -53,12 +52,11 @@ def update_pdf(file, public_id):
 
     return response
 
-@shared_task
-def send_email_register(id):
+def send_email_register(id, token):
     user = Usuario.objects.get(id=id)
     send_mail(
         subject="Código de verificação Eatly",
-        message=f"Digite este código para registrar sua conta em nossa plataforma: {user.code}",
+        message=f"Acesse esse link para registrar sua conta em nossa plataforma: http://localhost:8000?token={token}",
         from_email="joaovictor239090@gmail.com",
         recipient_list=[user.email],
         fail_silently=False

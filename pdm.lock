@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:afc8a0556c948e1e9a463307ddac4cd63e33a0645365021019e8f3891b6ea8cf"
+content_hash = "sha256:93a728ec1de5fe773ea6a0d7fb4ef0be4e0f8f860b6cdb85f4af4b8535d035d5"
 
 [[metadata.targets]]
 requires_python = "==3.12.*"
@@ -114,22 +114,6 @@ dependencies = [
     "kombu<5.6,>=5.5.2",
     "python-dateutil>=2.8.2",
     "vine<6.0,>=5.1.0",
-]
-files = [
-    {file = "celery-5.5.3-py3-none-any.whl", hash = "sha256:0b5761a07057acee94694464ca482416b959568904c9dfa41ce8413a7d65d525"},
-    {file = "celery-5.5.3.tar.gz", hash = "sha256:6c972ae7968c2b5281227f01c3a3f984037d21c5129d07bf3550cc2afc6b10a5"},
-]
-
-[[package]]
-name = "celery"
-version = "5.5.3"
-extras = ["redis"]
-requires_python = ">=3.8"
-summary = "Distributed Task Queue."
-groups = ["default"]
-dependencies = [
-    "celery==5.5.3",
-    "kombu[redis]",
 ]
 files = [
     {file = "celery-5.5.3-py3-none-any.whl", hash = "sha256:0b5761a07057acee94694464ca482416b959568904c9dfa41ce8413a7d65d525"},
@@ -547,22 +531,6 @@ files = [
 ]
 
 [[package]]
-name = "kombu"
-version = "5.5.4"
-extras = ["redis"]
-requires_python = ">=3.8"
-summary = "Messaging library for Python."
-groups = ["default"]
-dependencies = [
-    "kombu==5.5.4",
-    "redis!=4.5.5,!=5.0.2,<=5.2.1,>=4.5.2",
-]
-files = [
-    {file = "kombu-5.5.4-py3-none-any.whl", hash = "sha256:a12ed0557c238897d8e518f1d1fdf84bd1516c5e305af2dacd85c2015115feb8"},
-    {file = "kombu-5.5.4.tar.gz", hash = "sha256:886600168275ebeada93b888e831352fe578168342f0d1d5833d88ba0d847363"},
-]
-
-[[package]]
 name = "packaging"
 version = "25.0"
 requires_python = ">=3.8"
@@ -735,16 +703,16 @@ files = [
 
 [[package]]
 name = "redis"
-version = "5.2.1"
-requires_python = ">=3.8"
+version = "6.4.0"
+requires_python = ">=3.9"
 summary = "Python client for Redis database and key-value store"
 groups = ["default"]
 dependencies = [
     "async-timeout>=4.0.3; python_full_version < \"3.11.3\"",
 ]
 files = [
-    {file = "redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4"},
-    {file = "redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f"},
+    {file = "redis-6.4.0-py3-none-any.whl", hash = "sha256:f0544fa9604264e9464cdf4814e7d4830f74b165d52f2a330a760a88dd248b7f"},
+    {file = "redis-6.4.0.tar.gz", hash = "sha256:b01bc7282b8444e28ec36b261df5375183bb47a07eb9c603f284e89cbc5ef010"},
 ]
 
 [[package]]
