@@ -1,9 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from core.models import Order
-from core.serializers import OrderListSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
+from core.models import Order, ProductOrder
+from core.serializers import OrderListSerializer, OrderListCartSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
 
 class OrderViewSet(ModelViewSet):
     def get_queryset(self):
@@ -28,3 +29,28 @@ class OrderViewSet(ModelViewSet):
         if self.action == "partial_update":
             return DeliveryManAcceptOrderSerializer
         return CreateOrderSerializer
+    
+    @action(methods=['GET'], detail=False, url_path='cart')
+    def cart(self, request):
+        queryset = Order.objects.filter(client=self.request.user.id, status=1).all()
+        print(queryset)
+        serializer = OrderListCartSerializer(queryset, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+class ProductOrderViewSet(ModelViewSet):
+    queryset = ProductOrder.objects.all()
+    serializer_class = ProductOrderSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        order = instance.order
+        order.totalValue -= instance.product.price * instance.quantity
+        order.save()
+
+        self.perform_destroy(instance)
+
+        order_instance = OrderRetrieveSerializer(order).data
+
+        return Response(data=order_instance, status=status.HTTP_200_OK)
