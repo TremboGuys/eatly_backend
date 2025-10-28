@@ -14,7 +14,10 @@ class FavoriteListSerializer(ModelSerializer):
             "price": obj.product.price,
             "is_adult": obj.product.is_adult,
             "url_file": obj.product.url_file,
-            "restaurant": obj.product.restaurant.id
+            "restaurant": {
+                "id": obj.product.restaurant.restaurant.id,
+                "photo": obj.product.restaurant.photo,
+            }
         }
     class Meta:
         model = Favorite

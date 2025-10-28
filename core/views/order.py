@@ -1,9 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
-from core.models import Order
-from core.serializers import OrderListSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer
+from core.models import Order, ProductOrder
+from core.serializers import OrderListSerializer, OrderListCartSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer, ProductOrderListSerializer
 
 class OrderViewSet(ModelViewSet):
     def get_queryset(self):
@@ -28,3 +29,62 @@ class OrderViewSet(ModelViewSet):
         if self.action == "partial_update":
             return DeliveryManAcceptOrderSerializer
         return CreateOrderSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data, context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+
+        products_qs = ProductOrder.objects.filter(order=order.id).all()
+        products_response = ProductOrderListSerializer(products_qs, many=True).data
+
+        response = {
+            **OrderListSerializer(order).data,
+            "products": products_response,
+        }
+
+        return Response(data=response, status=status.HTTP_200_OK)
+    
+    @action(methods=['GET'], detail=False, url_path='cart')
+    def cart(self, request):
+        queryset = Order.objects.filter(client=self.request.user.id, status=1).all()
+        print(queryset)
+        serializer = OrderListCartSerializer(queryset, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+class ProductOrderViewSet(ModelViewSet):
+    queryset = ProductOrder.objects.all()
+    serializer_class = ProductOrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+
+        response = OrderRetrieveSerializer(Order.objects.get(id=order.id)).data
+
+        return Response(data=response, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        order = OrderRetrieveSerializer(Order.objects.get(id=serializer.data['order'])).data
+
+        return Response(data=order, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        order = instance.order
+        order.totalValue -= instance.product.price * instance.quantity
+        order.save()
+
+        self.perform_destroy(instance)
+
+        order_instance = OrderRetrieveSerializer(order).data
+
+        return Response(data=order_instance, status=status.HTTP_200_OK)

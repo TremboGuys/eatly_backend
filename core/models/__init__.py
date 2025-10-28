@@ -9,6 +9,7 @@ from .color import Color
 from .product import Product
 from .favorite import Favorite
 from .order import Order, ProductOrder
+from .payment import Payment, PaymentLog
 from .coupon import Coupon, CouponClient, CouponClientOrder
 from .orderStatusLog import OrderStatusLog
 from .review_restaurant import ReviewRestaurant, ResponseReviewRestaurant

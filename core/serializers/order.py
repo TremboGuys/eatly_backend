@@ -1,31 +1,122 @@
 import datetime
 from django.db import transaction
-from rest_framework.serializers import ModelSerializer, ValidationError, HiddenField, CurrentUserDefault
+from rest_framework.serializers import ModelSerializer, ValidationError, HiddenField, CurrentUserDefault, SerializerMethodField
 
 from core.models import Order, ProductOrder, OrderStatusLog, Restaurant
+
+class ProductOrderListSerializer(ModelSerializer):
+    product = SerializerMethodField()
+
+    def get_product(self, obj):
+        return {
+            "id": obj.product.id,
+            "name": obj.product.name,
+            "description": obj.product.description,
+            "price": obj.product.price,
+            "url_file": obj.product.url_file,
+            "is_adult": obj.product.is_adult,
+        }
+    class Meta:
+        model = ProductOrder
+        fields = "__all__"
+
+class ProductOrderCartSerializer(ModelSerializer):
+    product = SerializerMethodField()
+
+    def get_product(self, obj):
+        return {
+            "id": obj.product.id,
+            "name": obj.product.name,
+            "price": obj.product.price,
+            "url_file": obj.product.url_file,
+        }
+    class Meta:
+        model = ProductOrder
+        fields = "__all__"
+
+class OrderRetrieveSerializer(ModelSerializer):
+    products = ProductOrderListSerializer(many=True)
+    restaurant = SerializerMethodField()
+
+    def get_restaurant(self, obj):
+        return {
+            "id": obj.restaurant.id,
+            "name": obj.restaurant.name,
+            "photo": obj.restaurant.user.photo
+        }
+    class Meta:
+        model = Order
+        fields = "__all__"
 
 class ProductOrderSerializer(ModelSerializer):
     class Meta:
         model = ProductOrder
         fields = "__all__"
 
-class OrderListSerializer(ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ["id", "restaurant", "status"]
+    def create(self, validated_data):
+        order = validated_data.get('order')
+        order_instance = Order.objects.get(id=order.id)
 
-class OrderRetrieveSerializer(ModelSerializer):
-    products = ProductOrderSerializer(many=True)
+        product_order = ProductOrder.objects.create(**validated_data)
+        order_instance.totalValue += product_order.product.price * product_order.quantity
+        order_instance.save()
+
+        return order_instance
+    
+    def update(self, instance, validated_data):
+        if validated_data.get('quantity', None) is not None:
+            order = instance.order
+            add_quantity = validated_data['quantity'] - instance.quantity
+
+            order.totalValue += instance.product.price * add_quantity
+            order.save()
+        for attr, value in validated_data.items():
+            if hasattr(instance, attr):
+                setattr(instance, attr, value)
+        
+        instance.save()
+
+        return instance
+
+class OrderListSerializer(ModelSerializer):
+    restaurant = SerializerMethodField()
+
+    def get_restaurant(self, obj):
+        return {
+            "id": obj.restaurant.id,
+            "name": obj.restaurant.name,
+            "photo": obj.restaurant.user.photo
+        }
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = ['id', 'restaurant', 'totalValue', 'status', 'client']
+
+class OrderListCartSerializer(ModelSerializer):
+    client = HiddenField(default=CurrentUserDefault())
+    products = ProductOrderCartSerializer(many=True)
+    restaurant = SerializerMethodField()
+
+    def get_restaurant(self, obj):
+        return {
+            "id": obj.restaurant.id,
+            "user": obj.restaurant.user.id,
+            "photo": obj.restaurant.user.photo
+        }
+    class Meta:
+        model = Order
+        fields = ['id', 'restaurant', 'totalValue', 'dateTime', 'status', 'products', 'client']
+
+class CreateProductOrderSerializer(ModelSerializer):
+    class Meta:
+        model = ProductOrder
+        fields = ['product', 'quantity', 'observation']
 
 class CreateOrderSerializer(ModelSerializer):
     client = HiddenField(default=CurrentUserDefault())
-    products = ProductOrderSerializer(many=True)
+    products = CreateProductOrderSerializer(many=True)
     class Meta:
         model = Order
-        fields = ["client", "restaurant", "totalValue", "status", "products"]
+        fields = ['id', "restaurant", "totalValue", "status", "products", 'client']
     
     def create(self, validated_data):
         with transaction.atomic():
@@ -34,14 +125,11 @@ class CreateOrderSerializer(ModelSerializer):
             order = Order.objects.create(**validated_data)
 
             for product in products:
-                ProductOrder.objects.create(order=order, **product)
+                product['order'] = order
+                ProductOrder.objects.create(**product)
             
             OrderStatusLog.objects.create(order=order, status=order.status, dateTime=datetime.datetime.now())
 
-            restaurant = Restaurant.objects.get(id=order.restaurant)
-            restaurant.quantityOrders += 1
-            restaurant.save()
-            
             return order
 
 class DeliveryManAcceptOrderSerializer(ModelSerializer):

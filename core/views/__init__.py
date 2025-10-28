@@ -10,7 +10,8 @@ from .mark import MarkViewSet
 from .color import ColorViewSet
 from .product import ProductViewSet
 from .favorite import FavoriteViewSet
-from .order import OrderViewSet
+from .order import OrderViewSet, ProductOrderViewSet
+from .payment import PaymentViewSet
 from .coupon import CouponViewSet, CouponClientViewSet, CouponClientOrderViewSet
 from .review_restaurant import ReviewRestaurantViewSet, ResponseReviewRestaurantViewSet
 from .review_deliveryman import ReviewDeliverymanViewSet, ResponseReviewDeliverymanViewSet
