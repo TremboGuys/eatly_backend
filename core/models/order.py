@@ -6,11 +6,10 @@ from usuario.models import Usuario
 class Order(models.Model):
     class Status(models.IntegerChoices):
         CART = 1, "Cart"
-        PAYMENT = 2, "Payment"
-        PENDING = 3, "Pending"
-        PREPARING = 4, "Preparing"
-        DELIVERING = 5, "Delivering"
-        DELIVERED = 6, "Delivered"
+        PENDING = 2, "Pending"
+        PREPARING = 3, "Preparing"
+        DELIVERING = 4, "Delivering"
+        DELIVERED = 5, "Delivered"
     client = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="ordersClient")
     deliveryman = models.ForeignKey(Usuario, null=True, on_delete=models.PROTECT, related_name="ordersDelivery")
     restaurant = models.ForeignKey(Restaurant, on_delete=models.PROTECT, related_name="orders")
@@ -22,7 +21,7 @@ class Order(models.Model):
         return f"{self.id}"
 
 class ProductOrder(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="+")
-    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="products", null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="+")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="products", null=True, blank=True)
     quantity = models.PositiveSmallIntegerField()
     observation = models.TextField(max_length=200, blank=True, null=True)

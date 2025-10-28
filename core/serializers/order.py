@@ -15,7 +15,6 @@ class ProductOrderListSerializer(ModelSerializer):
             "price": obj.product.price,
             "url_file": obj.product.url_file,
             "is_adult": obj.product.is_adult,
-            "restaurant": obj.product.restaurant.restaurant.id
         }
     class Meta:
         model = ProductOrder
@@ -55,20 +54,19 @@ class ProductOrderSerializer(ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        order = Order.objects.get(id=validated_data['order'])
+        order = validated_data.get('order')
+        order_instance = Order.objects.get(id=order.id)
 
         product_order = ProductOrder.objects.create(**validated_data)
-        order.totalValue += product_order.product.price * product_order.quantity
-        order.save()
+        order_instance.totalValue += product_order.product.price * product_order.quantity
+        order_instance.save()
 
-        response = OrderRetrieveSerializer(Order.objects.get(id=order.id))
-
-        return response
+        return order_instance
     
     def update(self, instance, validated_data):
         if validated_data.get('quantity', None) is not None:
             order = instance.order
-            add_quantity = validated_data['quantity'] - order.quantity
+            add_quantity = validated_data['quantity'] - instance.quantity
 
             order.totalValue += instance.product.price * add_quantity
             order.save()
@@ -78,9 +76,7 @@ class ProductOrderSerializer(ModelSerializer):
         
         instance.save()
 
-        response = OrderRetrieveSerializer(Order.objects.get(id=order.id))
-
-        return response
+        return instance
 
 class OrderListSerializer(ModelSerializer):
     restaurant = SerializerMethodField()
@@ -103,6 +99,7 @@ class OrderListCartSerializer(ModelSerializer):
     def get_restaurant(self, obj):
         return {
             "id": obj.restaurant.id,
+            "user": obj.restaurant.user.id,
             "photo": obj.restaurant.user.photo
         }
     class Meta:
@@ -129,18 +126,9 @@ class CreateOrderSerializer(ModelSerializer):
 
             for product in products:
                 product['order'] = order
-                print(product)
                 ProductOrder.objects.create(**product)
             
             OrderStatusLog.objects.create(order=order, status=order.status, dateTime=datetime.datetime.now())
-            
-            products_qs = ProductOrder.objects.filter(order=order.id).all()
-            # products_response = ProductOrderListSerializer(products_qs, many=True).data
-
-            # response = {
-            #     **OrderListSerializer(order).data,
-            #     "products": products_response,
-            # }
 
             return order
 
