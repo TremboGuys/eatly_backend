@@ -41,7 +41,6 @@ router.register(r'response-deliveryman-reviews', ResponseReviewDeliverymanViewSe
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    # path('api/users/', include(usuario_router.urls)),
     path('api/user/', UserListAPIView.as_view()),
     path('api/user/register/', UserRegisterAPIView.as_view()),
     path('api/user/register/code/', CodeAPIView.as_view(), name="code_active_user"),
@@ -49,6 +48,7 @@ urlpatterns = [
     path('api/user/register/google/', UserCreateByGoogleTokenAPIView.as_view(), 
     name="register_user_google"),
     path('api/user/login/google/', LoginByGoogleAPIView.as_view(), name="login_user_google"),
+    path('api/user/profile/natural-person/', ProfileNaturalPersonAPIView.as_view(), name='get-profile-natural-person'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

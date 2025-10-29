@@ -4,20 +4,21 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import Order, ProductOrder
-from core.serializers import OrderListSerializer, OrderListCartSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer, ProductOrderListSerializer
+from core.serializers import OrderListSerializer, OrderListCartSerializer, OrderListPreparingSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer, ProductOrderListSerializer
 
 class OrderViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
+        status = self.request.query_params.get('status')
 
         if user.is_superuser:
             return Order.objects.all()
         if user.groups.filter(name='client'):
-            return Order.objects.filter(client=user)
+            return Order.objects.filter(client=user.id, status=status)
         elif user.groups.filter(name='restaurant'):
-            return Order.objects.filter(restaurant=user.restaurant.id)
+            return Order.objects.filter(restaurant=user.restaurant.id, status__gte=2)
         elif user.groups.filter(name='deliveryman'):
-            return Order.objects.filter(deliveryman=user)
+            return Order.objects.filter(deliveryman=user.id, status__gte=3)
         else:
             return Order.objects.none()
 
@@ -48,8 +49,14 @@ class OrderViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False, url_path='cart')
     def cart(self, request):
         queryset = Order.objects.filter(client=self.request.user.id, status=1).all()
-        print(queryset)
         serializer = OrderListCartSerializer(queryset, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    @action(methods=['GET'], detail=False, url_path='preparing')
+    def preparing(self, request):
+        queryset = Order.objects.filter(client=self.request.user.id, status__gte=2, status__lt=4).all()
+        serializer = OrderListPreparingSerializer(queryset, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     

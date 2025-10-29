@@ -56,9 +56,9 @@ class UploadCloudinary:
 
         try:
             if image_is_url:
-                im = cloudinary.uploader.upload(image_is_url, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+                im = cloudinary.uploader.upload(image_is_url, public_id=public_id, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
             else:
-                im = cloudinary.uploader.upload(base64_image, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
+                im = cloudinary.uploader.upload(base64_image, public_id=public_id, transformation=[{'width': 100, 'height': 80, 'crop': "scale"}])
         except Exception as error:
             raise APIException(f'Error updating image of user: {error}')
 

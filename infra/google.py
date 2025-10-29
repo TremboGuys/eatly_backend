@@ -8,7 +8,6 @@ def verify_google_token(token):
         })
 
         user_info = response.json()
-        print(user_info)
         return user_info
     except Exception as error:
         raise ValidationError(f"Error validating token: {error}")
