@@ -23,11 +23,13 @@ class FavoriteViewSet(ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         try:
-            serializer = self.get_serializer(data=request.data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+            serializerFavorite = self.get_serializer(data=request.data, context={'request': request})
+            serializerFavorite.is_valid(raise_exception=True)
+            favorite = serializerFavorite.save()
 
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            listFavorite = FavoriteListSerializer(Favorite.objects.filter(client=favorite.client.id).all(), many=True)
+
+            return Response(data=listFavorite.data, status=status.HTTP_200_OK)
         except IntegrityError as e:
             return Response(data={"error_code": "UNIQUE_VIOLATION", "message": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

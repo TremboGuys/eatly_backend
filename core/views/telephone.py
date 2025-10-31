@@ -5,12 +5,16 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models import Telephone
-from core.serializers import TelephoneSerializer
+from core.serializers import CreateTelephoneSerializer, TelephoneSerializer
 
 class TelephoneViewSet(ModelViewSet):
     queryset = Telephone.objects.all()
-    serializer_class = TelephoneSerializer
     permission_classes = [AllowAny]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateTelephoneSerializer
+        return TelephoneSerializer
 
     @action(detail=False, methods=['patch'], url_path="me")
     def update_me(self, request):

@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from infra.google import verify_google_token
 from usuario.models import Usuario
-from core.serializers import UserRegisterGoogleSerializer, NaturalPersonSerializer
+from core.serializers import UserRegisterGoogleSerializer, CreateUpdateNaturalPersonSerializer
 from django.db import transaction
 
 from dotenv import load_dotenv
@@ -22,33 +22,31 @@ class UserCreateByGoogleTokenAPIView(APIView):
 
             if token is None:
                 raise ValidationError("Access Token not found!")
-            user_info = verify_google_token(request.data['token'])
+            google_user_info = verify_google_token(request.data['token'])
 
             user = {
-                "email": user_info['email'],
-                "url_image": user_info['picture'],
+                "email": google_user_info['email'],
+                "url_image": google_user_info['picture'],
                 "role": request.data['role']
             }
 
             serializerUser = UserRegisterGoogleSerializer(data=user)
             serializerUser.is_valid(raise_exception=True)
-            serializerUser.save()
-            user = serializerUser.data
+            user = serializerUser.save()
+            data_serializer_user = serializerUser.data
 
             natural_person = {
-                "user": user['id'],
-                "name": user_info['name']
+                "user": user.id,
+                "name": google_user_info['name']
             }
 
-            serializerNp = NaturalPersonSerializer(data=natural_person)
+            serializerNp = CreateUpdateNaturalPersonSerializer(data=natural_person)
             serializerNp.is_valid(raise_exception=True)
             serializerNp.save()
 
-            user_instance = Usuario.objects.get(id=user['id'])
+            token = RefreshToken.for_user(user)
 
-            refresh = RefreshToken.for_user(user=user_instance)
-
-            data = {**user, "name": serializerNp.data['name'], "access": str(refresh.access_token), "refresh": str(refresh)}
+            data = {**data_serializer_user, "name": serializerNp.data['name'], "access": str(token.access_token),"refresh": str(token)}
 
             return Response(data=data, status=status.HTTP_201_CREATED)
 

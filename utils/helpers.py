@@ -56,7 +56,7 @@ def send_email_register(id, token):
     user = Usuario.objects.get(id=id)
     send_mail(
         subject="Código de verificação Eatly",
-        message=f"Acesse esse link para registrar sua conta em nossa plataforma: http://localhost:8000?token={token}",
+        message=f"Acesse esse link para registrar sua conta em nossa plataforma: http://localhost:5173/verify-email?token={token}",
         from_email="joaovictor239090@gmail.com",
         recipient_list=[user.email],
         fail_silently=False

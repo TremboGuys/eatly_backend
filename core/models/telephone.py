@@ -6,7 +6,7 @@ class Telephone(models.Model):
     class TypeTelephone(models.IntegerChoices):
         CELLPHONE = 1, "Cellphone"
         LANDLINE = 2, "Landline"
-    telephone_type = models.IntegerField(choices=TypeTelephone)
+    telephone_type = models.IntegerField(choices=TypeTelephone.choices)
     number_e164 = models.CharField(max_length=15)
     is_principal = models.BooleanField()
     user = models.ForeignKey(Usuario, on_delete=models.PROTECT, related_name="telephones")

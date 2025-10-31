@@ -100,11 +100,38 @@ class OrderListCartSerializer(ModelSerializer):
         return {
             "id": obj.restaurant.id,
             "user": obj.restaurant.user.id,
-            "photo": obj.restaurant.user.photo
+            "photo": obj.restaurant.user.photo,
         }
     class Meta:
         model = Order
         fields = ['id', 'restaurant', 'totalValue', 'dateTime', 'status', 'products', 'client']
+
+class OrderListPreparingSerializer(ModelSerializer):
+    client = HiddenField(default=CurrentUserDefault())
+    products = SerializerMethodField()
+    restaurant = SerializerMethodField()
+
+    def get_products(self, obj):
+        return [
+            {
+                "id": p.product.id,
+                "name": p.product.name,
+                "quantity": p.quantity,
+            }
+            for p in obj.products.all()
+        ]
+    
+    def get_restaurant(self, obj):
+        return {
+            "id": obj.restaurant.id,
+            "name": obj.restaurant.name,
+            "photo": obj.restaurant.user.photo,
+            "average_delivery_time": obj.restaurant.average_delivery_time
+        }
+    
+    class Meta:
+        model = Order
+        fields = ['id', 'products', 'restaurant', 'client', 'status']
 
 class CreateProductOrderSerializer(ModelSerializer):
     class Meta:

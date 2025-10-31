@@ -1,15 +1,15 @@
-from .user import UserRegisterSerializer, ListUserSerializer, UpdateUserSerializer, UserRegisterGoogleSerializer
+from .user import UserRegisterSerializer, ListUserSerializer, UpdateUserSerializer, UserRegisterGoogleSerializer, ProfileNaturalPersonSerializer
 from .category import CategorySerializer, ProductCategorySerializer
-from .telephone import TelephoneSerializer
+from .telephone import CreateTelephoneSerializer, TelephoneSerializer, ProfileTelephoneSerializer
 from .address import AddressSerializer
-from .natural_person import NaturalPersonSerializer
+from .natural_person import CreateUpdateNaturalPersonSerializer, NaturalPersonSerializer
 from .restaurant import RestaurantSerializer, CreateRestaurantSerializer, RetrieveRestaurantSerializer, ListRestaurantSerializer, RecentlyViewsSerializer, ListRecentlyViewsSerializer
 from .vehicle import VehicleSerializer, UpdateVehicleSerializer
 from .mark import MarkSerializer
 from .color import ColorSerializer
 from .product import ProductSerializer, ListProductSerializer, RetrieveProductSerializer
 from .favorite import FavoriteSerializer, FavoriteListSerializer
-from .order import OrderListSerializer, OrderListCartSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer, ProductOrderListSerializer
+from .order import OrderListSerializer, OrderListCartSerializer, OrderListPreparingSerializer, OrderRetrieveSerializer, CreateOrderSerializer, DeliveryManAcceptOrderSerializer, ProductOrderSerializer, ProductOrderListSerializer
 from .payment import PaymentSerializer, PaymentLogSerializer
 from .coupon import CouponSerializer, CouponClientSerializer, CouponClientOrderSerializer
 from .review_restaurant import ReviewRestaurantSerializer, UpdateReviewRestaurantSerializer, ResponseReviewRestaurantSerializer, UpdateResponseReviewRestaurantSerializer

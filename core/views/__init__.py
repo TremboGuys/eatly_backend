@@ -1,4 +1,4 @@
-from .user import UserRegisterAPIView, CodeAPIView, UserListAPIView, UserUpdateAPIView
+from .user import UserRegisterAPIView, CodeAPIView, UserListAPIView, UserUpdateAPIView, ProfileNaturalPersonAPIView
 from .google import UserCreateByGoogleTokenAPIView, LoginByGoogleAPIView
 from .category import CategoryViewSet
 from .telephone import TelephoneViewSet
