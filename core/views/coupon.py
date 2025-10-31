@@ -1,10 +1,11 @@
+import datetime
 from rest_framework.viewsets import ModelViewSet
 
 from core.models import Coupon, CouponClient, CouponClientOrder
 from core.serializers import CouponSerializer, CouponClientSerializer, CouponClientOrderSerializer
 
 class CouponViewSet(ModelViewSet):
-    queryset = Coupon.objects.all()
+    queryset = Coupon.objects.filter(expiration_date__gt=datetime.date.today())
     serializer_class = CouponSerializer
 
 class CouponClientViewSet(ModelViewSet):

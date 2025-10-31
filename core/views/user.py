@@ -2,7 +2,7 @@ import random
 import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework import status
@@ -11,7 +11,7 @@ from django.db import transaction
 from django.core.signing import Signer
 
 from usuario.models import Usuario
-from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer, UpdateUserSerializer
+from core.serializers import UserRegisterSerializer, TelephoneSerializer, ListUserSerializer, UpdateUserSerializer, ProfileNaturalPersonSerializer
 from utils.helpers import send_email_register
 
 class UserRegisterAPIView(APIView):
@@ -30,7 +30,7 @@ class UserRegisterAPIView(APIView):
             send_email_register(user.id, token)
             # transaction.on_commit(lambda: send_email_register.delay(user.id))
 
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(data={"id": user.id}, status=status.HTTP_201_CREATED)
 
 class CodeAPIView(APIView):
     permission_classes = [AllowAny]
@@ -56,8 +56,14 @@ class CodeAPIView(APIView):
         else:
             user.is_active = True
             user.save()
+            token = RefreshToken.for_user(user)
 
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            data = {
+                "access": str(token.access_token),
+                "refresh": str(token)
+            }
+
+            return Response(data=data, status=status.HTTP_202_ACCEPTED)
 
 
 class UserListAPIView(APIView):
@@ -78,9 +84,22 @@ class UserUpdateAPIView(APIView):
     def patch(self, request):
         user = self.request.user
         file = request.FILES.get('file', None)
-        request.data['file'] = file
+        data = request.data.copy()
+        data['file'] = file
 
-        serializer = UpdateUserSerializer(instance=user, data=request.data)
-        serializer.is_valid()
+        serializer = UpdateUserSerializer(instance=user, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ProfileNaturalPersonAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = self.request.user
+        print(user)
+
+        queryset = Usuario.objects.get(id=user.id)
+
+        serializer = ProfileNaturalPersonSerializer(queryset)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

@@ -56,9 +56,6 @@ class RestaurantViewSet(ModelViewSet):
             return ListRestaurantSerializer
         return RestaurantSerializer
     
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
-    
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'description']
 

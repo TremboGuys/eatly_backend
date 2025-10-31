@@ -59,8 +59,6 @@ class RetrieveRestaurantSerializer(ModelSerializer):
     
     def get_photo(self, obj):
         return obj.user.photo
-    
-    # Fazer um def get_categories com um set para categories
 
 class CreateRestaurantSerializer(ModelSerializer):
     class Meta:

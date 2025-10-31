@@ -6,6 +6,7 @@ from usuario.models import Usuario
 from django.contrib.auth.hashers import make_password
 from utils.helpers import create_image_user, update_image_user
 from django.db import transaction
+from core.models import Telephone
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -91,29 +92,50 @@ class ListUserSerializer(serializers.ModelSerializer):
         fields = ['email', 'group']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
-    file = serializers.FileField(write_only=True)
+    file = serializers.FileField(write_only=True, required=False, allow_null=True)
+    photo = serializers.URLField(required=False, allow_null=True, allow_blank=True)
     class Meta:
         model = Usuario
-        fields = ['email', 'password', 'photo', 'file']
+        fields = ['email', 'photo', 'file']
     
     def update(self, instance, validated_data):
-        file = validated_data.get('file')
-        email = validated_data.get('email', None)
-        password = validated_data.get('password', None)
+        file = validated_data.pop('file', None)
 
-        if instance.photo == "":
-            photo = create_image_user(file=file)
+        if file is not None:
+            if instance.photo:
+                photo = update_image_user(file=file, public_id=instance.public_id_cloudinary)
+            else:
+                photo = create_image_user(file=file)
             instance.photo = photo['secure_url']
             instance.public_id_cloudinary = photo['public_id']
-        else:
-            photo = update_image_user(file=file, public_id=instance.public_id_cloudinary)
-            instance.photo = photo['secure_url']
 
-        if email is not None:
-            instance.email = validated_data['email']
-        if password is not None:
-            instance.password = make_password(validated_data['password'])
+        for key, value in validated_data.items():
+            if hasattr(instance, key):
+                setattr(instance, key, value)
 
         instance.save()
 
         return instance
+
+class ProfileNaturalPersonSerializer(serializers.ModelSerializer):
+    profile = serializers.SerializerMethodField()
+    addresses = serializers.SerializerMethodField()
+
+    def get_profile(self, obj):
+        from core.serializers import ProfileTelephoneSerializer
+        return {
+            "id": obj.id,
+            "name": obj.person.name,
+            "email": obj.email,
+            "date_birth": obj.person.date_birth,
+            "photo": obj.photo,
+            "telephone": ProfileTelephoneSerializer(Telephone.objects.filter(user=obj.id, is_principal=True).first()).data['number_e164'],
+        }
+    
+    def get_addresses(self, obj):
+        from core.serializers import AddressSerializer
+        return AddressSerializer(obj.addresses.all(), many=True).data
+
+    class Meta:
+        model = Usuario
+        fields = ['profile', 'addresses']

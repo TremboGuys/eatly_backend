@@ -9,3 +9,8 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.client.id} - {self.product.name}"
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['client', 'product'], name="unique_client_product")
+        ]
