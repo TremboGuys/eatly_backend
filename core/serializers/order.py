@@ -100,7 +100,7 @@ class OrderListCartSerializer(ModelSerializer):
         return {
             "id": obj.restaurant.id,
             "user": obj.restaurant.user.id,
-            "photo": obj.restaurant.user.photo
+            "photo": obj.restaurant.user.photo,
         }
     class Meta:
         model = Order
@@ -116,7 +116,7 @@ class OrderListPreparingSerializer(ModelSerializer):
             {
                 "id": p.product.id,
                 "name": p.product.name,
-                "quantity": p.quantity
+                "quantity": p.quantity,
             }
             for p in obj.products.all()
         ]
@@ -125,12 +125,13 @@ class OrderListPreparingSerializer(ModelSerializer):
         return {
             "id": obj.restaurant.id,
             "name": obj.restaurant.name,
-            "photo": obj.restaurant.user.photo
+            "photo": obj.restaurant.user.photo,
+            "average_delivery_time": obj.restaurant.average_delivery_time
         }
     
     class Meta:
         model = Order
-        fields = ['id', 'products', 'restaurant', 'client']
+        fields = ['id', 'products', 'restaurant', 'client', 'status']
 
 class CreateProductOrderSerializer(ModelSerializer):
     class Meta:

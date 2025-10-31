@@ -56,8 +56,14 @@ class CodeAPIView(APIView):
         else:
             user.is_active = True
             user.save()
+            token = RefreshToken.for_user(user)
 
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            data = {
+                "access": str(token.access_token),
+                "refresh": str(token)
+            }
+
+            return Response(data=data, status=status.HTTP_202_ACCEPTED)
 
 
 class UserListAPIView(APIView):

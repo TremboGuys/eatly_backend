@@ -11,13 +11,8 @@ class FavoriteListSerializer(ModelSerializer):
             "id": obj.product.id,
             "name": obj.product.name,
             "description": obj.product.description,
-            "price": obj.product.price,
-            "is_adult": obj.product.is_adult,
             "url_file": obj.product.url_file,
-            "restaurant": {
-                "id": obj.product.restaurant.restaurant.id,
-                "photo": obj.product.restaurant.photo,
-            }
+            "restaurant": obj.product.restaurant.restaurant.id
         }
     class Meta:
         model = Favorite
@@ -28,7 +23,3 @@ class FavoriteSerializer(ModelSerializer):
     class Meta:
         model = Favorite
         fields = "__all__"
-
-    def create(self, validated_data):
-        print(validated_data)
-        return super().create(validated_data)

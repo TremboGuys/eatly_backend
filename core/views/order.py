@@ -9,12 +9,11 @@ from core.serializers import OrderListSerializer, OrderListCartSerializer, Order
 class OrderViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
-        status = self.request.query_params.get('status')
 
         if user.is_superuser:
             return Order.objects.all()
         if user.groups.filter(name='client'):
-            return Order.objects.filter(client=user.id, status=status)
+            return Order.objects.filter(client=user.id)
         elif user.groups.filter(name='restaurant'):
             return Order.objects.filter(restaurant=user.restaurant.id, status__gte=2)
         elif user.groups.filter(name='deliveryman'):
@@ -55,9 +54,16 @@ class OrderViewSet(ModelViewSet):
     
     @action(methods=['GET'], detail=False, url_path='preparing')
     def preparing(self, request):
-        queryset = Order.objects.filter(client=self.request.user.id, status__gte=2, status__lt=4).all()
+        queryset = Order.objects.filter(client=self.request.user.id, status__gte=2, status__lt=4).select_related('restaurant').prefetch_related('products').all()
         serializer = OrderListPreparingSerializer(queryset, many=True)
 
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    @action(methods=['GET'], detail=False, url_path='delivered')
+    def delivered(self, request):
+        queryset = Order.objects.filter(client=self.request.user.id, status=4).select_related('restaurant').prefetch_related('products').all()
+        serializer = OrderListPreparingSerializer(queryset, many=True)
+        
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
 class ProductOrderViewSet(ModelViewSet):
