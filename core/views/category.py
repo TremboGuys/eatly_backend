@@ -29,10 +29,10 @@ class CategoryViewSet(ModelViewSet):
         file = request.FILES['file']
         request.data['file'] = file
         
-        serializer = CategorySerializer(data=request.data)
+        serializer = CategorySerializer(category, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"message: Category updated with success"}, serializer.data, status=status.HTTP_200_OK)
+            return Response({"data": serializer.data, "message": 'Category updated with success'}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

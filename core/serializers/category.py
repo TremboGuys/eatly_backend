@@ -22,9 +22,9 @@ class CategorySerializer(serializers.ModelSerializer):
         file = validated_data.pop('file', None)
         if file:
             uploader = UploadCloudinary()
-            response = uploader.create_image(file)
+            response = uploader.update_image(file, instance.public_id_cloudinary)
 
-            instance.url_image = response
+            instance.url_image = response['secure_url']
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
